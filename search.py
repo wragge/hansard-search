@@ -27,6 +27,8 @@ def search():
             }
         },
         "highlight": {
+            "pre_tags" : ["<span class='highlight'>"],
+            "post_tags" : ["</span>"],
             "fields": {
                 "text*": {}
             }
