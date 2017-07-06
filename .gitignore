@@ -2,6 +2,4 @@
 credentials.py
 *.pyc
 .DS_Store
-searchenv
-wsgi.py
 search.sock
