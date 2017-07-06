@@ -1,0 +1,1262 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Search :: Historic Hansard</title>
+    <meta name="description" content="" />
+    <meta property="og:title" content="Search :: Historic Hansard" />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="" />
+    <meta property="og:image" content="/static/images/historic-hansard.png" />
+
+    <link rel="stylesheet" href="/static/css/main.css">
+    <link rel="stylesheet" href="/static/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/static/css/bootstrap-datetimepicker.min.css">
+    <link rel="canonical" href="">
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    </head>
+  <body>
+    <div class="container">
+      <nav class="navbar navbar-default navbar-fixed-top">
+        <div class="container">
+          <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+              <span class="sr-only">Toggle navigation</span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="https://historichansard.net/"><span property="name">Historic Hansard</span></a>
+          </div>
+          <div id="navbar" class="navbar-collapse collapse">
+            <ul class="nav navbar-nav">
+              <li class="dropdown">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">House of Reps <span class="caret"></span></a>
+                <ul class="dropdown-menu">
+                  <li><a href="https://historichansard.net/hofreps/years/">Years</a></li>
+                  <li><a href="https://historichansard.net/hofreps/parliaments/">Parliaments</a></li>
+                  <li><a href="https://historichansard.net/hofreps/people/">People</a></li>
+                  <li><a href="https://historichansard.net/hofreps/bills/">Bills</a></li>
+                </ul>
+              </li>
+              <li class="dropdown">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Senate <span class="caret"></span></a>
+                <ul class="dropdown-menu">
+                  <li><a href="https://historichansard.net/senate/years/">Years</a></li>
+                  <li><a href="https://historichansard.net/senate/parliaments/">Parliaments</a></li>
+                  <li><a href="https://historichansard.net/senate/people/">People</a></li>
+                  <li><a href="https://historichansard.net/senate/bills/">Bills</a></li>
+                </ul>
+              </li>
+              <li><a href="https://historichansard.net/about/">About</a></li>
+            </ul>
+            
+          </div><!--/.nav-collapse -->
+        </div><!--/.container-fluid -->
+      </nav>
+      <h2>Search</h2>
+        <form method="GET" action="/">
+            <div class="row">
+                <div class="col-md-9">
+                    <div class="form-group">
+                        <label class="control-label" for="q">Words or phrases</label>
+                        <input type="text" class="form-control" id="q" name="q" placeholder="Enter keywords"{% if q %} value="{{ q }}"{% endif %}>   
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label class="control-label" for="datepicker1">From</label>
+                                <div class='input-group date' id='datepicker1'>
+                                    <input type="text" class="form-control" id="date_from" name="date_from" value="{% if date_from is not none %}{{ date_from }}{% else %}1901-01-01{% endif %}" />
+                                    <span class="input-group-addon">
+                                        <i class="fa fa-calendar" aria-hidden="true"></i>
+                                    </span>
+                                 </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label class="control-label" for="datepicker2">To</label>
+                                <div class='input-group date' id='datepicker2'>
+                                    <input type="text" class="form-control" id="date_to" name="date_to" value="{% if date_to is not none %}{{ date_to }}{% else %}1980-12-31{% endif %}" />
+                                    <span class="input-group-addon">
+                                        <i class="fa fa-calendar" aria-hidden="true"></i>
+                                    </span>
+                                 </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label class="control-label" for="sort">Order</label>
+                                <select class="form-control" id="sort" name="sort">
+                                    <option value="score"{% if sort == "score" %} selected{% endif %}>Relevance</option>
+                                    <option value="date_asc"{% if sort == "date_asc" %} selected{% endif %}>Date (earliest first)</option>
+                                    <option value="date_desc"{% if sort == "date_desc" %} selected{% endif %}>Date (latest first)</option>
+                                </select>
+                    </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <input class="btn btn-primary" type="submit" value="Search">
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label class="control-label" for="house">House</label>
+                        <select class="form-control" id="house" name="house">
+                            <option value="">Either</option>
+                            <option value="hofreps"{% if house == "hofreps" %} selected{% endif %}>House of Representatives</option>
+                            <option value="senate"{% if house == "senate" %} selected{% endif %}>Senate</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label" for="parliament">Parliament</label>
+                        <select class="form-control" id="parliament" name="parliament">
+                            <option value="">Any</option>
+                            {% for p in parliaments %}
+                                <option{% if p == parliament %} selected {% endif %}>{{ p }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label" for="speaker">Speaker</label>
+                        <select class="form-control" id="speaker" name="speaker">
+                            <option value="">Any</option>
+                            <option value="JLJ"{% if speaker == "JLJ" %} selected {% endif %}>ABBOTT, Charles</option>
+                            <option value="JLL"{% if speaker == "JLL" %} selected {% endif %}>ABBOTT, Joseph</option>
+                            <option value="JNT"{% if speaker == "JNT" %} selected {% endif %}>ABBOTT, Macartney</option>
+                            <option value="JLM"{% if speaker == "JLM" %} selected {% endif %}>ABBOTT, Percy</option>
+                            <option value="JYU"{% if speaker == "JYU" %} selected {% endif %}>ABBOTT, Richard</option>
+                            <option value="JLN"{% if speaker == "JLN" %} selected {% endif %}>ABEL, John</option>
+                            <option value="JZ2"{% if speaker == "JZ2" %} selected {% endif %}>ADAMSON, John</option>
+                            <option value="JLR"{% if speaker == "JLR" %} selected {% endif %}>ADERMANN, Charles</option>
+                            <option value="ID4"{% if speaker == "ID4" %} selected {% endif %}>ADERMANN, Evan</option>
+                            <option value="JLS"{% if speaker == "JLS" %} selected {% endif %}>AHERN, Cornelius</option>
+                            <option value="KD4"{% if speaker == "KD4" %} selected {% endif %}>ALDRED, Ken</option>
+                            <option value="JLT"{% if speaker == "JLT" %} selected {% endif %}>ALLAN, Archibald</option>
+                            <option value="JZH"{% if speaker == "JZH" %} selected {% endif %}>AMOUR, Stanley</option>
+                            <option value="JLU"{% if speaker == "JLU" %} selected {% endif %}>ANDERSON, Charles</option>
+                            <option value="JLV"{% if speaker == "JLV" %} selected {% endif %}>ANDERSON, Gordon</option>
+                            <option value="JZQ"{% if speaker == "JZQ" %} selected {% endif %}>ANDERSON, Kenneth</option>
+                            <option value="JZW"{% if speaker == "JZW" %} selected {% endif %}>ANDREW, David</option>
+                            <option value="JLW"{% if speaker == "JLW" %} selected {% endif %}>ANDREWS, Thomas</option>
+                            <option value="JLY"{% if speaker == "JLY" %} selected {% endif %}>ANSTEY, Frank</option>
+                            <option value="BU4"{% if speaker == "BU4" %} selected {% endif %}>ANTHONY, Doug</option>
+                            <option value="JLZ"{% if speaker == "JLZ" %} selected {% endif %}>ANTHONY, Hubert</option>
+                            <option value="IE4"{% if speaker == "IE4" %} selected {% endif %}>ARCHER, Brian</option>
+                            <option value="JM2"{% if speaker == "JM2" %} selected {% endif %}>ARCHER, Edward</option>
+                            <option value="JM8"{% if speaker == "JM8" %} selected {% endif %}>ARCHIBALD, William</option>
+                            <option value="K08"{% if speaker == "K08" %} selected {% endif %}>ARKINS, James</option>
+                            <option value="JM9"{% if speaker == "JM9" %} selected {% endif %}>ARMITAGE, John</option>
+                            <option value="JMA"{% if speaker == "JMA" %} selected {% endif %}>ARMSTRONG, Adam</option>
+                            <option value="K0C"{% if speaker == "K0C" %} selected {% endif %}>ARMSTRONG, John Ignatius</option>
+                            <option value="K0N"{% if speaker == "K0N" %} selected {% endif %}>ARNOLD, James</option>
+                            <option value="JMB"{% if speaker == "JMB" %} selected {% endif %}>ARTHUR, John</option>
+                            <option value="K0P"{% if speaker == "K0P" %} selected {% endif %}>ARTHUR, Thomas</option>
+                            <option value="JMC"{% if speaker == "JMC" %} selected {% endif %}>ARTHUR, William</option>
+                            <option value="K0W"{% if speaker == "K0W" %} selected {% endif %}>ASHLEY, William</option>
+                            <option value="JME"{% if speaker == "JME" %} selected {% endif %}>ASHLEY-BROWN, Alfred</option>
+                            <option value="JMF"{% if speaker == "JMF" %} selected {% endif %}>ASTON, William</option>
+                            <option value="JMG"{% if speaker == "JMG" %} selected {% endif %}>ATKINSON, Llewelyn</option>
+                            <option value="K0Z"{% if speaker == "K0Z" %} selected {% endif %}>AYLETT, William</option>
+                            <option value="JNM"{% if speaker == "JNM" %} selected {% endif %}>BADMAN, Albert</option>
+                            <option value="JNO"{% if speaker == "JNO" %} selected {% endif %}>BAILLIEU, Marshall</option>
+                            <option value="JNP"{% if speaker == "JNP" %} selected {% endif %}>BAKER, Francis Matthew</option>
+                            <option value="JNR"{% if speaker == "JNR" %} selected {% endif %}>BAKER, Francis Patrick</option>
+                            <option value="L2E"{% if speaker == "L2E" %} selected {% endif %}>BAKER, Richard</option>
+                            <option value="K18"{% if speaker == "K18" %} selected {% endif %}>BAKHAP, Thomas</option>
+                            <option value="JNV"{% if speaker == "JNV" %} selected {% endif %}>BAMFORD, Frederick</option>
+                            <option value="JNZ"{% if speaker == "JNZ" %} selected {% endif %}>BANDIDT, Henry</option>
+                            <option value="K1I"{% if speaker == "K1I" %} selected {% endif %}>BARKER, Stephen</option>
+                            <option value="JNX"{% if speaker == "JNX" %} selected {% endif %}>BARNARD, Herbert</option>
+                            <option value="JO8"{% if speaker == "JO8" %} selected {% endif %}>BARNARD, Lance</option>
+                            <option value="JOA"{% if speaker == "JOA" %} selected {% endif %}>BARNES, Charles</option>
+                            <option value="K1L"{% if speaker == "K1L" %} selected {% endif %}>BARNES, John</option>
+                            <option value="K1O"{% if speaker == "K1O" %} selected {% endif %}>BARRETT, John</option>
+                            <option value="009LR"{% if speaker == "009LR" %} selected {% endif %}>BARTON, Edmund</option>
+                            <option value="K1P"{% if speaker == "K1P" %} selected {% endif %}>BARWELL, Henry</option>
+                            <option value="126"{% if speaker == "126" %} selected {% endif %}>BARWICK, Garfield</option>
+                            <option value="JOC"{% if speaker == "JOC" %} selected {% endif %}>BATCHELOR, Egerton</option>
+                            <option value="JOE"{% if speaker == "JOE" %} selected {% endif %}>BATE, Henry</option>
+                            <option value="LE4"{% if speaker == "LE4" %} selected {% endif %}>BAUME, Michael</option>
+                            <option value="ME4"{% if speaker == "ME4" %} selected {% endif %}>BAUME, Peter</option>
+                            <option value="JOG"{% if speaker == "JOG" %} selected {% endif %}>BAYLEY, James</option>
+                            <option value="JOI"{% if speaker == "JOI" %} selected {% endif %}>BEALE, Oliver</option>
+                            <option value="JOK"{% if speaker == "JOK" %} selected {% endif %}>BEARD, Henry</option>
+                            <option value="JOM"{% if speaker == "JOM" %} selected {% endif %}>BEASLEY, John</option>
+                            <option value="JOO"{% if speaker == "JOO" %} selected {% endif %}>BEATON, Noel</option>
+                            <option value="PE4"{% if speaker == "PE4" %} selected {% endif %}>BEAZLEY, Kim</option>
+                            <option value="JF7"{% if speaker == "JF7" %} selected {% endif %}>BEAZLEY, Kim</option>
+                            <option value="JOQ"{% if speaker == "JOQ" %} selected {% endif %}>BECK, Arthur</option>
+                            <option value="K1Q"{% if speaker == "K1Q" %} selected {% endif %}>BEERWORTH, Frederick</option>
+                            <option value="JOS"{% if speaker == "JOS" %} selected {% endif %}>BELL, George</option>
+                            <option value="K1T"{% if speaker == "K1T" %} selected {% endif %}>BENN, Archibald</option>
+                            <option value="JOU"{% if speaker == "JOU" %} selected {% endif %}>BENNETT, Adrian</option>
+                            <option value="JOW"{% if speaker == "JOW" %} selected {% endif %}>BENNETT, Benjamin</option>
+                            <option value="JOY"{% if speaker == "JOY" %} selected {% endif %}>BENNETT, James</option>
+                            <option value="K1W"{% if speaker == "K1W" %} selected {% endif %}>BENNY, Benjamin</option>
+                            <option value="JP5"{% if speaker == "JP5" %} selected {% endif %}>BENSON, Samuel</option>
+                            <option value="JP8"{% if speaker == "JP8" %} selected {% endif %}>BERINSON, Joe</option>
+                            <option value="JPA"{% if speaker == "JPA" %} selected {% endif %}>BERRY, Douglas</option>
+                            <option value="K1X"{% if speaker == "K1X" %} selected {% endif %}>BESSELL, Eric</option>
+                            <option value="JPC"{% if speaker == "JPC" %} selected {% endif %}>BEST, Robert</option>
+                            <option value="JPE"{% if speaker == "JPE" %} selected {% endif %}>BIRD, Alan</option>
+                            <option value="JPG"{% if speaker == "JPG" %} selected {% endif %}>BIRNEY, Reginald</option>
+                            <option value="JPJ"{% if speaker == "JPJ" %} selected {% endif %}>BIRRELL, Frederick</option>
+                            <option value="K1Y"{% if speaker == "K1Y" %} selected {% endif %}>BISHOP, Reginald</option>
+                            <option value="JPL"{% if speaker == "JPL" %} selected {% endif %}>BLACKBURN, Doris</option>
+                            <option value="JPN"{% if speaker == "JPN" %} selected {% endif %}>BLACKBURN, Maurice</option>
+                            <option value="JPP"{% if speaker == "JPP" %} selected {% endif %}>BLACKLOW, Archibald</option>
+                            <option value="JPT"{% if speaker == "JPT" %} selected {% endif %}>BLAIN, Adair</option>
+                            <option value="JPV"{% if speaker == "JPV" %} selected {% endif %}>BLAKELEY, Arthur</option>
+                            <option value="K22"{% if speaker == "K22" %} selected {% endif %}>BLAKEY, Albert</option>
+                            <option value="JQ7"{% if speaker == "JQ7" %} selected {% endif %}>BLAND, Francis</option>
+                            <option value="VE4"{% if speaker == "VE4" %} selected {% endif %}>BLEWETT, Neal</option>
+                            <option value="JQ9"{% if speaker == "JQ9" %} selected {% endif %}>BLUNDELL, Reginald</option>
+                            <option value="K2C"{% if speaker == "K2C" %} selected {% endif %}>BOLTON, William</option>
+                            <option value="0V4"{% if speaker == "0V4" %} selected {% endif %}>BONNER, Neville</option>
+                            <option value="JQB"{% if speaker == "JQB" %} selected {% endif %}>BONNETT, Robert</option>
+                            <option value="JR7"{% if speaker == "JR7" %} selected {% endif %}>BONYTHON, John</option>
+                            <option value="JR9"{% if speaker == "JR9" %} selected {% endif %}>BOSMAN, Leonard</option>
+                            <option value="JRB"{% if speaker == "JRB" %} selected {% endif %}>BOSTOCK, William</option>
+                            <option value="JRD"{% if speaker == "JRD" %} selected {% endif %}>BOURCHIER, John</option>
+                            <option value="JRF"{% if speaker == "JRF" %} selected {% endif %}>BOURKE, William</option>
+                            <option value="JRH"{% if speaker == "JRH" %} selected {% endif %}>BOWDEN, Eric</option>
+                            <option value="JRJ"{% if speaker == "JRJ" %} selected {% endif %}>BOWDEN, George</option>
+                            <option value="ZE4"{% if speaker == "ZE4" %} selected {% endif %}>BOWEN, Lionel</option>
+                            <option value="JRN"{% if speaker == "JRN" %} selected {% endif %}>BOWEN, Nigel</option>
+                            <option value="JRP"{% if speaker == "JRP" %} selected {% endif %}>BOYD, James</option>
+                            <option value="JRR"{% if speaker == "JRR" %} selected {% endif %}>BRADDON, Edward</option>
+                            <option value="JRU"{% if speaker == "JRU" %} selected {% endif %}>BRADFIELD, James</option>
+                            <option value="0F4"{% if speaker == "0F4" %} selected {% endif %}>BRAITHWAITE, Ray</option>
+                            <option value="K2F"{% if speaker == "K2F" %} selected {% endif %}>BRAND, Charles</option>
+                            <option value="JS7"{% if speaker == "JS7" %} selected {% endif %}>BRAND, William</option>
+                            <option value="K2I"{% if speaker == "K2I" %} selected {% endif %}>BRANSON, George</option>
+                            <option value="JS9"{% if speaker == "JS9" %} selected {% endif %}>BREEN, John</option>
+                            <option value="K2W"{% if speaker == "K2W" %} selected {% endif %}>BREEN, Marie</option>
+                            <option value="JSC"{% if speaker == "JSC" %} selected {% endif %}>BRENNAN, Frank</option>
+                            <option value="K2Z"{% if speaker == "K2Z" %} selected {% endif %}>BRENNAN, Thomas</option>
+                            <option value="JSE"{% if speaker == "JSE" %} selected {% endif %}>BRIDGES-MAXWELL, Crawford</option>
+                            <option value="JSG"{% if speaker == "JSG" %} selected {% endif %}>BRIMBLECOMBE, Wilfred</option>
+                            <option value="5A5"{% if speaker == "5A5" %} selected {% endif %}>BROWN, Bob</option>
+                            <option value="JSI"{% if speaker == "JSI" %} selected {% endif %}>BROWN, Geoffrey</option>
+                            <option value="K6P"{% if speaker == "K6P" %} selected {% endif %}>BROWN, Gordon</option>
+                            <option value="OD4"{% if speaker == "OD4" %} selected {% endif %}>BROWN, John</option>
+                            <option value="JSK"{% if speaker == "JSK" %} selected {% endif %}>BROWN, Joseph</option>
+                            <option value="PD4"{% if speaker == "PD4" %} selected {% endif %}>BROWN, Neil</option>
+                            <option value="JSM"{% if speaker == "JSM" %} selected {% endif %}>BROWN, Thomas</option>
+                            <option value="K3A"{% if speaker == "K3A" %} selected {% endif %}>BROWN, William</option>
+                            <option value="JSO"{% if speaker == "JSO" %} selected {% endif %}>BROWNBILL, Kay</option>
+                            <option value="JSQ"{% if speaker == "JSQ" %} selected {% endif %}>BROWNE, Peter</option>
+                            <option value="JSS"{% if speaker == "JSS" %} selected {% endif %}>BRUCE, Henry</option>
+                            <option value="F4B"{% if speaker == "F4B" %} selected {% endif %}>BRUCE, Stanley</option>
+                            <option value="JSU"{% if speaker == "JSU" %} selected {% endif %}>BRYANT, Gordon</option>
+                            <option value="JSW"{% if speaker == "JSW" %} selected {% endif %}>BRYSON, William</option>
+                            <option value="JSY"{% if speaker == "JSY" %} selected {% endif %}>BUCHANAN, Alexander</option>
+                            <option value="K3J"{% if speaker == "K3J" %} selected {% endif %}>BULL, Thomas</option>
+                            <option value="JT9"{% if speaker == "JT9" %} selected {% endif %}>BUNGEY, Melville</option>
+                            <option value="K3N"{% if speaker == "K3N" %} selected {% endif %}>BUNTON, Cleaver</option>
+                            <option value="JTC"{% if speaker == "JTC" %} selected {% endif %}>BURCHELL, Reginald</option>
+                            <option value="JTF"{% if speaker == "JTF" %} selected {% endif %}>BURKE, Thomas</option>
+                            <option value="JTI"{% if speaker == "JTI" %} selected {% endif %}>BURNS, George</option>
+                            <option value="JTM"{% if speaker == "JTM" %} selected {% endif %}>BURNS, William</option>
+                            <option value="3F4"{% if speaker == "3F4" %} selected {% endif %}>BURR, Max</option>
+                            <option value="JTP"{% if speaker == "JTP" %} selected {% endif %}>BURY, Leslie</option>
+                            <option value="K3O"{% if speaker == "K3O" %} selected {% endif %}>BUTTFIELD, Nancy</option>
+                            <option value="4F4"{% if speaker == "4F4" %} selected {% endif %}>BUTTON, John</option>
+                            <option value="K3Q"{% if speaker == "K3Q" %} selected {% endif %}>BUZACOTT, Richard</option>
+                            <option value="K3R"{% if speaker == "K3R" %} selected {% endif %}>BYRNE, Condon</option>
+                            <option value="SD4"{% if speaker == "SD4" %} selected {% endif %}>CADMAN, Alan</option>
+                            <option value="1V4"{% if speaker == "1V4" %} selected {% endif %}>CAIRNS, Jim</option>
+                            <option value="JTS"{% if speaker == "JTS" %} selected {% endif %}>CAIRNS, Kevin</option>
+                            <option value="JTW"{% if speaker == "JTW" %} selected {% endif %}>CALDER, Stephen</option>
+                            <option value="BV8"{% if speaker == "BV8" %} selected {% endif %}>CALWELL, Arthur</option>
+                            <option value="JTY"{% if speaker == "JTY" %} selected {% endif %}>CAMERON, Archie</option>
+                            <option value="2V4"{% if speaker == "2V4" %} selected {% endif %}>CAMERON, Clyde</option>
+                            <option value="K3S"{% if speaker == "K3S" %} selected {% endif %}>CAMERON, Cyril</option>
+                            <option value="L8E"{% if speaker == "L8E" %} selected {% endif %}>CAMERON, Donald</option>
+                            <option value="JU8"{% if speaker == "JU8" %} selected {% endif %}>CAMERON, Donald Alastair</option>
+                            <option value="JUB"{% if speaker == "JUB" %} selected {% endif %}>CAMERON, Donald Charles</option>
+                            <option value="JUF"{% if speaker == "JUF" %} selected {% endif %}>CAMERON, Donald James</option>
+                            <option value="9F4"{% if speaker == "9F4" %} selected {% endif %}>CAMERON, Donald Milner</option>
+                            <option value="K3T"{% if speaker == "K3T" %} selected {% endif %}>CAMERON, Donald Newton</option>
+                            <option value="JUJ"{% if speaker == "JUJ" %} selected {% endif %}>CAMERON, Donald Norman</option>
+                            <option value="AF4"{% if speaker == "AF4" %} selected {% endif %}>CAMERON, Ewen</option>
+                            <option value="BF4"{% if speaker == "BF4" %} selected {% endif %}>CAMERON, Ian</option>
+                            <option value="JVZ"{% if speaker == "JVZ" %} selected {% endif %}>CAMERON, Malcolm</option>
+                            <option value="K3V"{% if speaker == "K3V" %} selected {% endif %}>CAMERON, Martin</option>
+                            <option value="JW6"{% if speaker == "JW6" %} selected {% endif %}>CANN, George</option>
+                            <option value="K3W"{% if speaker == "K3W" %} selected {% endif %}>CANT, Hartley</option>
+                            <option value="JW8"{% if speaker == "JW8" %} selected {% endif %}>CARIGE, Colin</option>
+                            <option value="DF4"{% if speaker == "DF4" %} selected {% endif %}>CARLTON, Jim</option>
+                            <option value="JWA"{% if speaker == "JWA" %} selected {% endif %}>CARPENTER, William</option>
+                            <option value="JWC"{% if speaker == "JWC" %} selected {% endif %}>CARR, Ernest</option>
+                            <option value="2U4"{% if speaker == "2U4" %} selected {% endif %}>CARRICK, John</option>
+                            <option value="K3X"{% if speaker == "K3X" %} selected {% endif %}>CARROLL, William</option>
+                            <option value="JWE"{% if speaker == "JWE" %} selected {% endif %}>CASEY, Richard</option>
+                            <option value="JWK"{% if speaker == "JWK" %} selected {% endif %}>CASH, Earl</option>
+                            <option value="JNG"{% if speaker == "JNG" %} selected {% endif %}>CASS, Moss</option>
+                            <option value="JWO"{% if speaker == "JWO" %} selected {% endif %}>CATTS, James</option>
+                            <option value="K6F"{% if speaker == "K6F" %} selected {% endif %}>CAVANAGH, James</option>
+                            <option value="K6H"{% if speaker == "K6H" %} selected {% endif %}>CHAMBERLAIN, John</option>
+                            <option value="JWR"{% if speaker == "JWR" %} selected {% endif %}>CHAMBERS, Cyril</option>
+                            <option value="EF4"{% if speaker == "EF4" %} selected {% endif %}>CHANEY, Fred</option>
+                            <option value="JWV"{% if speaker == "JWV" %} selected {% endif %}>CHANEY, Fred+D3309</option>
+                            <option value="JWY"{% if speaker == "JWY" %} selected {% endif %}>CHANTER, John</option>
+                            <option value="JX7"{% if speaker == "JX7" %} selected {% endif %}>CHAPMAN, Austin</option>
+                            <option value="FF4"{% if speaker == "FF4" %} selected {% endif %}>CHAPMAN, Grant</option>
+                            <option value="K6I"{% if speaker == "K6I" %} selected {% endif %}>CHAPMAN, John</option>
+                            <option value="GF4"{% if speaker == "GF4" %} selected {% endif %}>CHARLES, David</option>
+                            <option value="K6J"{% if speaker == "K6J" %} selected {% endif %}>CHARLESTON, David</option>
+                            <option value="JXA"{% if speaker == "JXA" %} selected {% endif %}>CHARLTON, Matthew</option>
+                            <option value="K6L"{% if speaker == "K6L" %} selected {% endif %}>CHATAWAY, Thomas</option>
+                            <option value="A48"{% if speaker == "A48" %} selected {% endif %}>CHIFLEY, Ben</option>
+                            <option value="HF4"{% if speaker == "HF4" %} selected {% endif %}>CHILD, Joan</option>
+                            <option value="3V4"{% if speaker == "3V4" %} selected {% endif %}>CHIPP, Don</option>
+                            <option value="JUN"{% if speaker == "JUN" %} selected {% endif %}>CHRESBY, Arthur</option>
+                            <option value="JUP"{% if speaker == "JUP" %} selected {% endif %}>CLAREY, Percy</option>
+                            <option value="JUQ"{% if speaker == "JUQ" %} selected {% endif %}>CLARK, Joseph</option>
+                            <option value="JUU"{% if speaker == "JUU" %} selected {% endif %}>CLARKE, Francis</option>
+                            <option value="JYJ"{% if speaker == "JYJ" %} selected {% endif %}>CLAY, Lionel</option>
+                            <option value="JYK"{% if speaker == "JYK" %} selected {% endif %}>CLAYTON, Gareth</option>
+                            <option value="JYO"{% if speaker == "JYO" %} selected {% endif %}>CLEAVER, Richard</option>
+                            <option value="K6M"{% if speaker == "K6M" %} selected {% endif %}>CLEMONS, John</option>
+                            <option value="K6N"{% if speaker == "K6N" %} selected {% endif %}>CLOTHIER, Robert</option>
+                            <option value="LF4"{% if speaker == "LF4" %} selected {% endif %}>COATES, John</option>
+                            <option value="JZG"{% if speaker == "JZG" %} selected {% endif %}>COCKLE, John</option>
+                            <option value="NF4"{% if speaker == "NF4" %} selected {% endif %}>COHEN, Barry</option>
+                            <option value="K6R"{% if speaker == "K6R" %} selected {% endif %}>COHEN, Samuel</option>
+                            <option value="K6W"{% if speaker == "K6W" %} selected {% endif %}>COLE, George</option>
+                            <option value="K7F"{% if speaker == "K7F" %} selected {% endif %}>COLEBATCH, Hal</option>
+                            <option value="JZK"{% if speaker == "JZK" %} selected {% endif %}>COLEMAN, Percy</option>
+                            <option value="5V4"{% if speaker == "5V4" %} selected {% endif %}>COLEMAN, Ruth</option>
+                            <option value="JZO"{% if speaker == "JZO" %} selected {% endif %}>COLES, Arthur</option>
+                            <option value="JZX"{% if speaker == "JZX" %} selected {% endif %}>COLLARD, Frederick</option>
+                            <option value="K7H"{% if speaker == "K7H" %} selected {% endif %}>COLLARD, Stanley</option>
+                            <option value="K7M"{% if speaker == "K7M" %} selected {% endif %}>COLLETT, Herbert</option>
+                            <option value="K7P"{% if speaker == "K7P" %} selected {% endif %}>COLLINGS, Joseph</option>
+                            <option value="K07"{% if speaker == "K07" %} selected {% endif %}>COLLINS, Maurice</option>
+                            <option value="K0D"{% if speaker == "K0D" %} selected {% endif %}>COLLINS, Thomas</option>
+                            <option value="PF4"{% if speaker == "PF4" %} selected {% endif %}>COLSTON, Malcolm</option>
+                            <option value="K0I"{% if speaker == "K0I" %} selected {% endif %}>COMBER, Jack</option>
+                            <option value="K0K"{% if speaker == "K0K" %} selected {% endif %}>CONELAN, William</option>
+                            <option value="QF4"{% if speaker == "QF4" %} selected {% endif %}>CONNOLLY, David</option>
+                            <option value="K0O"{% if speaker == "K0O" %} selected {% endif %}>CONNOR, Rex</option>
+                            <option value="K4E"{% if speaker == "K4E" %} selected {% endif %}>CONROY, Alfred</option>
+                            <option value="K4F"{% if speaker == "K4F" %} selected {% endif %}>CONSIDINE, Michael</option>
+                            <option value="K4I"{% if speaker == "K4I" %} selected {% endif %}>COOK, James</option>
+                            <option value="F4S"{% if speaker == "F4S" %} selected {% endif %}>COOK, Joseph</option>
+                            <option value="K4M"{% if speaker == "K4M" %} selected {% endif %}>COOK, Robert</option>
+                            <option value="JQN"{% if speaker == "JQN" %} selected {% endif %}>COOKE, Joseph</option>
+                            <option value="K4O"{% if speaker == "K4O" %} selected {% endif %}>COOKE, Nelson</option>
+                            <option value="K4P"{% if speaker == "K4P" %} selected {% endif %}>COOKE, Samuel</option>
+                            <option value="K5J"{% if speaker == "K5J" %} selected {% endif %}>COON, Jabez</option>
+                            <option value="JQP"{% if speaker == "JQP" %} selected {% endif %}>COOPER, Walter</option>
+                            <option value="K5L"{% if speaker == "K5L" %} selected {% endif %}>COPE, James</option>
+                            <option value="K5O"{% if speaker == "K5O" %} selected {% endif %}>CORBETT, James</option>
+                            <option value="K5P"{% if speaker == "K5P" %} selected {% endif %}>CORBOY, Edwin</option>
+                            <option value="JQQ"{% if speaker == "JQQ" %} selected {% endif %}>CORMACK, Magnus</option>
+                            <option value="K6Q"{% if speaker == "K6Q" %} selected {% endif %}>CORSER, Bernard</option>
+                            <option value="K6S"{% if speaker == "K6S" %} selected {% endif %}>CORSER, Edward</option>
+                            <option value="K6T"{% if speaker == "K6T" %} selected {% endif %}>COSTA, Dominic</option>
+                            <option value="K6U"{% if speaker == "K6U" %} selected {% endif %}>COTTER, John</option>
+                            <option value="JQR"{% if speaker == "JQR" %} selected {% endif %}>COTTON, Bob</option>
+                            <option value="JQY"{% if speaker == "JQY" %} selected {% endif %}>COURTICE, Benjamin</option>
+                            <option value="K6V"{% if speaker == "K6V" %} selected {% endif %}>COURTNAY, Frank</option>
+                            <option value="K6X"{% if speaker == "K6X" %} selected {% endif %}>COUTTS, Wilfred</option>
+                            <option value="K7C"{% if speaker == "K7C" %} selected {% endif %}>COWAN, David</option>
+                            <option value="JRT"{% if speaker == "JRT" %} selected {% endif %}>COX, Charles</option>
+                            <option value="K7J"{% if speaker == "K7J" %} selected {% endif %}>CRAMER, John</option>
+                            <option value="JRW"{% if speaker == "JRW" %} selected {% endif %}>CRAWFORD, Thomas</option>
+                            <option value="JAG"{% if speaker == "JAG" %} selected {% endif %}>CREAN, Frank</option>
+                            <option value="K7O"{% if speaker == "K7O" %} selected {% endif %}>CREMEAN, John</option>
+                            <option value="JSB"{% if speaker == "JSB" %} selected {% endif %}>CRITCHLEY, John</option>
+                            <option value="JTH"{% if speaker == "JTH" %} selected {% endif %}>CROFT, John</option>
+                            <option value="YF4"{% if speaker == "YF4" %} selected {% endif %}>CROSS, Manfred</option>
+                            <option value="K7U"{% if speaker == "K7U" %} selected {% endif %}>CROUCH, Richard</option>
+                            <option value="K7X"{% if speaker == "K7X" %} selected {% endif %}>CRUICKSHANK, George</option>
+                            <option value="K7Z"{% if speaker == "K7Z" %} selected {% endif %}>CULLEY, Charles</option>
+                            <option value="K87"{% if speaker == "K87" %} selected {% endif %}>CULPIN, Millice</option>
+                            <option value="0G4"{% if speaker == "0G4" %} selected {% endif %}>CUNNINGHAM, Barry</option>
+                            <option value="JTK"{% if speaker == "JTK" %} selected {% endif %}>CUNNINGHAM, James</option>
+                            <option value="K88"{% if speaker == "K88" %} selected {% endif %}>CUNNINGHAM, Lucien</option>
+                            <option value="K8B"{% if speaker == "K8B" %} selected {% endif %}>CURTIN, Daniel</option>
+                            <option value="009FQ"{% if speaker == "009FQ" %} selected {% endif %}>CURTIN, John</option>
+                            <option value="K8G"{% if speaker == "K8G" %} selected {% endif %}>CUSACK, John</option>
+                            <option value="6V4"{% if speaker == "6V4" %} selected {% endif %}>DALY, Fred</option>
+                            <option value="JTL"{% if speaker == "JTL" %} selected {% endif %}>DALY, John</option>
+                            <option value="KC9"{% if speaker == "KC9" %} selected {% endif %}>DANKEL, George</option>
+                            <option value="JTR"{% if speaker == "JTR" %} selected {% endif %}>DARCEY, Richard</option>
+                            <option value="UD4"{% if speaker == "UD4" %} selected {% endif %}>DARLING, Elaine</option>
+                            <option value="KCA"{% if speaker == "KCA" %} selected {% endif %}>DAVIDSON, Charles</option>
+                            <option value="JTT"{% if speaker == "JTT" %} selected {% endif %}>DAVIDSON, Gordon</option>
+                            <option value="KCB"{% if speaker == "KCB" %} selected {% endif %}>DAVIES, Ronald</option>
+                            <option value="KCC"{% if speaker == "KCC" %} selected {% endif %}>DAVIES, William</option>
+                            <option value="KCD"{% if speaker == "KCD" %} selected {% endif %}>DAVIS, Francis</option>
+                            <option value="9E4"{% if speaker == "9E4" %} selected {% endif %}>DAWKINS, John</option>
+                            <option value="JTV"{% if speaker == "JTV" %} selected {% endif %}>DAWSON, Anderson</option>
+                            <option value="JU7"{% if speaker == "JU7" %} selected {% endif %}>DE LARGIE, Hugh</option>
+                            <option value="009MD"{% if speaker == "009MD" %} selected {% endif %}>DEAKIN, Alfred</option>
+                            <option value="KCE"{% if speaker == "KCE" %} selected {% endif %}>DEAN, Gordon</option>
+                            <option value="LLW"{% if speaker == "LLW" %} selected {% endif %}>DEAN, Roger</option>
+                            <option value="KCF"{% if speaker == "KCF" %} selected {% endif %}>DEDMAN, John</option>
+                            <option value="JUD"{% if speaker == "JUD" %} selected {% endif %}>DEIN, Adam</option>
+                            <option value="KCH"{% if speaker == "KCH" %} selected {% endif %}>DENNIS, Samuel</option>
+                            <option value="KCI"{% if speaker == "KCI" %} selected {% endif %}>DEVINE, Leonard</option>
+                            <option value="JUH"{% if speaker == "JUH" %} selected {% endif %}>DEVITT, Donald</option>
+                            <option value="JUL"{% if speaker == "JUL" %} selected {% endif %}>DEVLIN, John</option>
+                            <option value="JUM"{% if speaker == "JUM" %} selected {% endif %}>DITTMER, Felix</option>
+                            <option value="3G4"{% if speaker == "3G4" %} selected {% endif %}>DOBIE, Don</option>
+                            <option value="JVC"{% if speaker == "JVC" %} selected {% endif %}>DOBSON, Henry</option>
+                            <option value="JVF"{% if speaker == "JVF" %} selected {% endif %}>DOOLEY, John</option>
+                            <option value="KCK"{% if speaker == "KCK" %} selected {% endif %}>DOWNER, Alexander</option>
+                            <option value="JVG"{% if speaker == "JVG" %} selected {% endif %}>DOWNER, John William</option>
+                            <option value="KCL"{% if speaker == "KCL" %} selected {% endif %}>DOYLE, Francis</option>
+                            <option value="JXO"{% if speaker == "JXO" %} selected {% endif %}>DRAKE, James</option>
+                            <option value="JXP"{% if speaker == "JXP" %} selected {% endif %}>DRAKE-BROCKMAN, Edmund</option>
+                            <option value="JXR"{% if speaker == "JXR" %} selected {% endif %}>DRAKE-BROCKMAN, Thomas</option>
+                            <option value="KCM"{% if speaker == "KCM" %} selected {% endif %}>DRAKEFORD, Arthur</option>
+                            <option value="KCS"{% if speaker == "KCS" %} selected {% endif %}>DRUMMOND, David</option>
+                            <option value="KCT"{% if speaker == "KCT" %} selected {% endif %}>DRUMMOND, Peter</option>
+                            <option value="JXX"{% if speaker == "JXX" %} selected {% endif %}>DRURY, Arnold</option>
+                            <option value="KCU"{% if speaker == "KCU" %} selected {% endif %}>DRURY, Edward</option>
+                            <option value="6G4"{% if speaker == "6G4" %} selected {% endif %}>DUFFY, Michael</option>
+                            <option value="JXZ"{% if speaker == "JXZ" %} selected {% endif %}>DUNCAN, Walter</option>
+                            <option value="JY7"{% if speaker == "JY7" %} selected {% endif %}>DUNCAN-HUGHES, John</option>
+                            <option value="JYB"{% if speaker == "JYB" %} selected {% endif %}>DUNN, James Patrick Digger</option>
+                            <option value="8G4"{% if speaker == "8G4" %} selected {% endif %}>DURACK, Peter</option>
+                            <option value="KDA"{% if speaker == "KDA" %} selected {% endif %}>DUTHIE, Gilbert</option>
+                            <option value="JYF"{% if speaker == "JYF" %} selected {% endif %}>EARLE, John</option>
+                            <option value="KDB"{% if speaker == "KDB" %} selected {% endif %}>EDMONDS, William</option>
+                            <option value="KDD"{% if speaker == "KDD" %} selected {% endif %}>EDWARDS, George</option>
+                            <option value="LLN"{% if speaker == "LLN" %} selected {% endif %}>EDWARDS, Harold</option>
+                            <option value="KDF"{% if speaker == "KDF" %} selected {% endif %}>EDWARDS, Richard</option>
+                            <option value="KDH"{% if speaker == "KDH" %} selected {% endif %}>EGGINS, Eldred</option>
+                            <option value="KDI"{% if speaker == "KDI" %} selected {% endif %}>EINFELD, Sydney</option>
+                            <option value="KDJ"{% if speaker == "KDJ" %} selected {% endif %}>ELDRIDGE, John</option>
+                            <option value="YF6"{% if speaker == "YF6" %} selected {% endif %}>ELLICOTT, Bob</option>
+                            <option value="JYG"{% if speaker == "JYG" %} selected {% endif %}>ELLIOTT, Harold</option>
+                            <option value="JYH"{% if speaker == "JYH" %} selected {% endif %}>ELLIOTT, Robert</option>
+                            <option value="JYI"{% if speaker == "JYI" %} selected {% endif %}>ELSTOB, Ronald</option>
+                            <option value="8H7"{% if speaker == "8H7" %} selected {% endif %}>ENDERBY, Kep</option>
+                            <option value="KDN"{% if speaker == "KDN" %} selected {% endif %}>ENGLAND, John</option>
+                            <option value="KDO"{% if speaker == "KDO" %} selected {% endif %}>ERWIN, Dudley</option>
+                            <option value="VD4"{% if speaker == "VD4" %} selected {% endif %}>EVANS, Gareth</option>
+                            <option value="DTN"{% if speaker == "DTN" %} selected {% endif %}>EVATT, Herbert Vere</option>
+                            <option value="JYN"{% if speaker == "JYN" %} selected {% endif %}>EVERETT, Mervyn</option>
+                            <option value="KDP"{% if speaker == "KDP" %} selected {% endif %}>EVERINGHAM, Douglas</option>
+                            <option value="KDQ"{% if speaker == "KDQ" %} selected {% endif %}>EWERT, Keith</option>
+                            <option value="JYQ"{% if speaker == "JYQ" %} selected {% endif %}>EWING, Norman</option>
+                            <option value="KDR"{% if speaker == "KDR" %} selected {% endif %}>EWING, Thomas</option>
+                            <option value="F4T"{% if speaker == "F4T" %} selected {% endif %}>FADDEN, Arthur William</option>
+                            <option value="KDS"{% if speaker == "KDS" %} selected {% endif %}>FAILES, Laurence</option>
+                            <option value="KDT"{% if speaker == "KDT" %} selected {% endif %}>FAIRBAIRN, David</option>
+                            <option value="JYR"{% if speaker == "JYR" %} selected {% endif %}>FAIRBAIRN, George</option>
+                            <option value="KEM"{% if speaker == "KEM" %} selected {% endif %}>FAIRBAIRN, James</option>
+                            <option value="KEN"{% if speaker == "KEN" %} selected {% endif %}>FAIRHALL, Allen</option>
+                            <option value="KEO"{% if speaker == "KEO" %} selected {% endif %}>FALCONER, Peter</option>
+                            <option value="KEP"{% if speaker == "KEP" %} selected {% endif %}>FALKINDER, Charles</option>
+                            <option value="KES"{% if speaker == "KES" %} selected {% endif %}>FALKINER, Franc</option>
+                            <option value="KEU"{% if speaker == "KEU" %} selected {% endif %}>FALSTEIN, Sydney</option>
+                            <option value="KEV"{% if speaker == "KEV" %} selected {% endif %}>FENTON, James</option>
+                            <option value="JYS"{% if speaker == "JYS" %} selected {% endif %}>FERGUSON, John</option>
+                            <option value="JYT"{% if speaker == "JYT" %} selected {% endif %}>FERRICKS, Myles</option>
+                            <option value="JYW"{% if speaker == "JYW" %} selected {% endif %}>FIELD, Albert</option>
+                            <option value="CG4"{% if speaker == "CG4" %} selected {% endif %}>FIFE, Wal</option>
+                            <option value="JYX"{% if speaker == "JYX" %} selected {% endif %}>FINDLEY, Edward</option>
+                            <option value="JZ8"{% if speaker == "JZ8" %} selected {% endif %}>FINLAY, Alexander</option>
+                            <option value="KEX"{% if speaker == "KEX" %} selected {% endif %}>FINLAYSON, William</option>
+                            <option value="F4N"{% if speaker == "F4N" %} selected {% endif %}>FISHER, Andrew</option>
+                            <option value="EG4"{% if speaker == "EG4" %} selected {% endif %}>FISHER, Peter</option>
+                            <option value="KEZ"{% if speaker == "KEZ" %} selected {% endif %}>FISKEN, Archibald</option>
+                            <option value="JZB"{% if speaker == "JZB" %} selected {% endif %}>FITZGERALD, Joseph</option>
+                            <option value="KFB"{% if speaker == "KFB" %} selected {% endif %}>FITZPATRICK, John</option>
+                            <option value="KFC"{% if speaker == "KFC" %} selected {% endif %}>FLEMING, William</option>
+                            <option value="KFF"{% if speaker == "KFF" %} selected {% endif %}>FOLEY, George</option>
+                            <option value="JZD"{% if speaker == "JZD" %} selected {% endif %}>FOLL, Hattil</option>
+                            <option value="KFH"{% if speaker == "KFH" %} selected {% endif %}>FORBES, Alexander</option>
+                            <option value="F4U"{% if speaker == "F4U" %} selected {% endif %}>FORDE, Francis Michael</option>
+                            <option value="KFJ"{% if speaker == "KFJ" %} selected {% endif %}>FORREST, John</option>
+                            <option value="KFN"{% if speaker == "KFN" %} selected {% endif %}>FOSTER, Francis</option>
+                            <option value="KKH"{% if speaker == "KKH" %} selected {% endif %}>FOSTER, George</option>
+                            <option value="KFO"{% if speaker == "KFO" %} selected {% endif %}>FOSTER, Norman</option>
+                            <option value="KFP"{% if speaker == "KFP" %} selected {% endif %}>FOSTER, Richard</option>
+                            <option value="JWG"{% if speaker == "JWG" %} selected {% endif %}>FOWLER, James</option>
+                            <option value="JWI"{% if speaker == "JWI" %} selected {% endif %}>FOX, Edmund</option>
+                            <option value="JWN"{% if speaker == "JWN" %} selected {% endif %}>FRANCIS, Frederick</option>
+                            <option value="JWQ"{% if speaker == "JWQ" %} selected {% endif %}>FRANCIS, Grosvenor</option>
+                            <option value="JWT"{% if speaker == "JWT" %} selected {% endif %}>FRANCIS, Josiah</option>
+                            <option value="KKJ"{% if speaker == "KKJ" %} selected {% endif %}>FRASER, Alexander</option>
+                            <option value="JWU"{% if speaker == "JWU" %} selected {% endif %}>FRASER, Allan</option>
+                            <option value="KKR"{% if speaker == "KKR" %} selected {% endif %}>FRASER, James</option>
+                            <option value="JWX"{% if speaker == "JWX" %} selected {% endif %}>FRASER, Jim</option>
+                            <option value="QS4"{% if speaker == "QS4" %} selected {% endif %}>FRASER, Malcolm</option>
+                            <option value="KKL"{% if speaker == "KKL" %} selected {% endif %}>FRASER, Simon</option>
+                            <option value="JX9"{% if speaker == "JX9" %} selected {% endif %}>FRAZER, Charles</option>
+                            <option value="HG4"{% if speaker == "HG4" %} selected {% endif %}>FREE, Ross</option>
+                            <option value="JXI"{% if speaker == "JXI" %} selected {% endif %}>FREETH, Gordon</option>
+                            <option value="JXL"{% if speaker == "JXL" %} selected {% endif %}>FROST, Charles</option>
+                            <option value="JXQ"{% if speaker == "JXQ" %} selected {% endif %}>FRY, Ken</option>
+                            <option value="JYV"{% if speaker == "JYV" %} selected {% endif %}>FULLER, Arthur</option>
+                            <option value="JZF"{% if speaker == "JZF" %} selected {% endif %}>FULLER, George</option>
+                            <option value="JZP"{% if speaker == "JZP" %} selected {% endif %}>FULTON, William</option>
+                            <option value="JZT"{% if speaker == "JZT" %} selected {% endif %}>FYSH, Philip</option>
+                            <option value="K0A"{% if speaker == "K0A" %} selected {% endif %}>GABB, Joel</option>
+                            <option value="K0E"{% if speaker == "K0E" %} selected {% endif %}>GAHA, John</option>
+                            <option value="KKP"{% if speaker == "KKP" %} selected {% endif %}>GAIR, Vincent</option>
+                            <option value="K97"{% if speaker == "K97" %} selected {% endif %}>GALVIN, Patrick</option>
+                            <option value="K9A"{% if speaker == "K9A" %} selected {% endif %}>GANDER, Joseph</option>
+                            <option value="K9C"{% if speaker == "K9C" %} selected {% endif %}>GARDEN, John</option>
+                            <option value="KKZ"{% if speaker == "KKZ" %} selected {% endif %}>GARDINER, Albert</option>
+                            <option value="K9H"{% if speaker == "K9H" %} selected {% endif %}>GARDNER, Sydney</option>
+                            <option value="K9L"{% if speaker == "K9L" %} selected {% endif %}>GARLAND, Ransley</option>
+                            <option value="KL7"{% if speaker == "KL7" %} selected {% endif %}>GARLING, Henry</option>
+                            <option value="L6X"{% if speaker == "L6X" %} selected {% endif %}>GARRICK, Horace</option>
+                            <option value="K9S"{% if speaker == "K9S" %} selected {% endif %}>GELLIBRAND, John</option>
+                            <option value="7V4"{% if speaker == "7V4" %} selected {% endif %}>GEORGES, George</option>
+                            <option value="KAN"{% if speaker == "KAN" %} selected {% endif %}>GIBB, James</option>
+                            <option value="KAQ"{% if speaker == "KAQ" %} selected {% endif %}>GIBBONS, George</option>
+                            <option value="KLP"{% if speaker == "KLP" %} selected {% endif %}>GIBBS, William</option>
+                            <option value="KAR"{% if speaker == "KAR" %} selected {% endif %}>GIBBS, Wylie</option>
+                            <option value="KAU"{% if speaker == "KAU" %} selected {% endif %}>GIBSON, Adrian</option>
+                            <option value="KAY"{% if speaker == "KAY" %} selected {% endif %}>GIBSON, William</option>
+                            <option value="RG4"{% if speaker == "RG4" %} selected {% endif %}>GIETZELT, Arthur</option>
+                            <option value="KB8"{% if speaker == "KB8" %} selected {% endif %}>GILES, Geoffrey</option>
+                            <option value="KBE"{% if speaker == "KBE" %} selected {% endif %}>GILLARD, Reginald</option>
+                            <option value="KBF"{% if speaker == "KBF" %} selected {% endif %}>GILMORE, Thomas</option>
+                            <option value="KLS"{% if speaker == "KLS" %} selected {% endif %}>GIVENS, Thomas</option>
+                            <option value="KLU"{% if speaker == "KLU" %} selected {% endif %}>GLASGOW, William</option>
+                            <option value="KLW"{% if speaker == "KLW" %} selected {% endif %}>GLASSEY, Thomas</option>
+                            <option value="KCO"{% if speaker == "KCO" %} selected {% endif %}>GLYNN, Patrick</option>
+                            <option value="XD4"{% if speaker == "XD4" %} selected {% endif %}>GOODLUCK, Bruce</option>
+                            <option value="KCP"{% if speaker == "KCP" %} selected {% endif %}>GORDON, David</option>
+                            <option value="KH5"{% if speaker == "KH5" %} selected {% endif %}>GORTON, John</option>
+                            <option value="KLZ"{% if speaker == "KLZ" %} selected {% endif %}>GOULD, Albert</option>
+                            <option value="KCQ"{% if speaker == "KCQ" %} selected {% endif %}>GRAHAM, Bruce</option>
+                            <option value="KMI"{% if speaker == "KMI" %} selected {% endif %}>GRAHAM, Charles</option>
+                            <option value="KMK"{% if speaker == "KMK" %} selected {% endif %}>GRANT, Charles</option>
+                            <option value="KMN"{% if speaker == "KMN" %} selected {% endif %}>GRANT, Donald</option>
+                            <option value="KMP"{% if speaker == "KMP" %} selected {% endif %}>GRANT, John</option>
+                            <option value="8V4"{% if speaker == "8V4" %} selected {% endif %}>GRASSBY, Al</option>
+                            <option value="KF5"{% if speaker == "KF5" %} selected {% endif %}>GRAY, George</option>
+                            <option value="KMT"{% if speaker == "KMT" %} selected {% endif %}>GRAY, John</option>
+                            <option value="KF8"{% if speaker == "KF8" %} selected {% endif %}>GRAYDEN, William</option>
+                            <option value="KF9"{% if speaker == "KF9" %} selected {% endif %}>GREEN, Albert</option>
+                            <option value="KFA"{% if speaker == "KFA" %} selected {% endif %}>GREEN, Roland</option>
+                            <option value="KFD"{% if speaker == "KFD" %} selected {% endif %}>GREENUP, Arthur</option>
+                            <option value="KMX"{% if speaker == "KMX" %} selected {% endif %}>GREENWOOD, Ivor</option>
+                            <option value="KFE"{% if speaker == "KFE" %} selected {% endif %}>GREGORY, Henry</option>
+                            <option value="KFG"{% if speaker == "KFG" %} selected {% endif %}>GRIFFITHS, Charles</option>
+                            <option value="9V4"{% if speaker == "9V4" %} selected {% endif %}>GRIMES, Don</option>
+                            <option value="KFI"{% if speaker == "KFI" %} selected {% endif %}>GROOM, Arthur</option>
+                            <option value="KFK"{% if speaker == "KFK" %} selected {% endif %}>GROOM, Littleton</option>
+                            <option value="QK5"{% if speaker == "QK5" %} selected {% endif %}>GROOM, Ray</option>
+                            <option value="KFL"{% if speaker == "KFL" %} selected {% endif %}>GROOM, William</option>
+                            <option value="C7D"{% if speaker == "C7D" %} selected {% endif %}>GUILFOYLE, Margaret</option>
+                            <option value="KFQ"{% if speaker == "KFQ" %} selected {% endif %}>GULLETT, Henry</option>
+                            <option value="KFS"{% if speaker == "KFS" %} selected {% endif %}>GULLETT, Henry</option>
+                            <option value="KFU"{% if speaker == "KFU" %} selected {% endif %}>GUN, Richard</option>
+                            <option value="KN7"{% if speaker == "KN7" %} selected {% endif %}>GUTHRIE, James</option>
+                            <option value="KNB"{% if speaker == "KNB" %} selected {% endif %}>GUTHRIE, Robert</option>
+                            <option value="KNN"{% if speaker == "KNN" %} selected {% endif %}>GUY, James</option>
+                            <option value="KFW"{% if speaker == "KFW" %} selected {% endif %}>GUY, James Allan</option>
+                            <option value="KFX"{% if speaker == "KFX" %} selected {% endif %}>HADLEY, James</option>
+                            <option value="1H4"{% if speaker == "1H4" %} selected {% endif %}>HAINES, Janine</option>
+                            <option value="KFZ"{% if speaker == "KFZ" %} selected {% endif %}>HALBERT, Hugh</option>
+                            <option value="L6Z"{% if speaker == "L6Z" %} selected {% endif %}>HALL, David</option>
+                            <option value="2H4"{% if speaker == "2H4" %} selected {% endif %}>HALL, Steele</option>
+                            <option value="KGA"{% if speaker == "KGA" %} selected {% endif %}>HALLETT, John</option>
+                            <option value="4H4"{% if speaker == "4H4" %} selected {% endif %}>HAMER, David</option>
+                            <option value="KGC"{% if speaker == "KGC" %} selected {% endif %}>HAMILTON, Leonard</option>
+                            <option value="L77"{% if speaker == "L77" %} selected {% endif %}>HAMPSON, Alfred</option>
+                            <option value="KGF"{% if speaker == "KGF" %} selected {% endif %}>HANDBY, Herbert</option>
+                            <option value="KNR"{% if speaker == "KNR" %} selected {% endif %}>HANNAFORD, Douglas</option>
+                            <option value="KNU"{% if speaker == "KNU" %} selected {% endif %}>HANNAN, George</option>
+                            <option value="KGG"{% if speaker == "KGG" %} selected {% endif %}>HANNAN, Joseph</option>
+                            <option value="KGH"{% if speaker == "KGH" %} selected {% endif %}>HANSEN, Brendan</option>
+                            <option value="KGL"{% if speaker == "KGL" %} selected {% endif %}>HARDING, Ernest</option>
+                            <option value="KNZ"{% if speaker == "KNZ" %} selected {% endif %}>HARDY, Charles</option>
+                            <option value="KO8"{% if speaker == "KO8" %} selected {% endif %}>HARNEY, Edward</option>
+                            <option value="KNI"{% if speaker == "KNI" %} selected {% endif %}>HARPER, Robert</option>
+                            <option value="6H4"{% if speaker == "6H4" %} selected {% endif %}>HARRADINE, Brian</option>
+                            <option value="232369"{% if speaker == "232369" %} selected {% endif %}>HARRIS, John</option>
+                            <option value="KNM"{% if speaker == "KNM" %} selected {% endif %}>HARRISON, Eli James</option>
+                            <option value="KNX"{% if speaker == "KNX" %} selected {% endif %}>HARRISON, Eric</option>
+                            <option value="KNT"{% if speaker == "KNT" %} selected {% endif %}>HARRISON, Eric</option>
+                            <option value="KNY"{% if speaker == "KNY" %} selected {% endif %}>HARTNOLL, William</option>
+                            <option value="KOB"{% if speaker == "KOB" %} selected {% endif %}>HASLEM, John</option>
+                            <option value="ZL6"{% if speaker == "ZL6" %} selected {% endif %}>HASLUCK, Paul</option>
+                            <option value="YD4"{% if speaker == "YD4" %} selected {% endif %}>HAWKE, Bob</option>
+                            <option value="KOC"{% if speaker == "KOC" %} selected {% endif %}>HAWKER, Charles</option>
+                            <option value="KGP"{% if speaker == "KGP" %} selected {% endif %}>HAWORTH, William</option>
+                            <option value="KGV"{% if speaker == "KGV" %} selected {% endif %}>HAY, Alexander</option>
+                            <option value="RK4"{% if speaker == "RK4" %} selected {% endif %}>HAYDEN, Bill</option>
+                            <option value="KOF"{% if speaker == "KOF" %} selected {% endif %}>HAYES, John</option>
+                            <option value="KGX"{% if speaker == "KGX" %} selected {% endif %}>HAYLEN, Leslie</option>
+                            <option value="KOJ"{% if speaker == "KOJ" %} selected {% endif %}>HAYS, Herbert</option>
+                            <option value="KOM"{% if speaker == "KOM" %} selected {% endif %}>HEARN, Jean</option>
+                            <option value="KOO"{% if speaker == "KOO" %} selected {% endif %}>HEATLEY, William</option>
+                            <option value="KGZ"{% if speaker == "KGZ" %} selected {% endif %}>HEDGES, William</option>
+                            <option value="KH8"{% if speaker == "KH8" %} selected {% endif %}>HEITMANN, Edward</option>
+                            <option value="KOS"{% if speaker == "KOS" %} selected {% endif %}>HENDERSON, George</option>
+                            <option value="KOU"{% if speaker == "KOU" %} selected {% endif %}>HENDRICKSON, Albion</option>
+                            <option value="KOW"{% if speaker == "KOW" %} selected {% endif %}>HENTY, Norman</option>
+                            <option value="KHA"{% if speaker == "KHA" %} selected {% endif %}>HEWSON, Henry</option>
+                            <option value="AH4"{% if speaker == "AH4" %} selected {% endif %}>HICKS, Noel</option>
+                            <option value="KHC"{% if speaker == "KHC" %} selected {% endif %}>HIGGINS, Henry</option>
+                            <option value="KHE"{% if speaker == "KHE" %} selected {% endif %}>HIGGS, William</option>
+                            <option value="KHG"{% if speaker == "KHG" %} selected {% endif %}>HILL, William</option>
+                            <option value="KOZ"{% if speaker == "KOZ" %} selected {% endif %}>HOARE, Albert</option>
+                            <option value="00ATA"{% if speaker == "00ATA" %} selected {% endif %}>HODGES, John</option>
+                            <option value="BV4"{% if speaker == "BV4" %} selected {% endif %}>HODGMAN, Michael</option>
+                            <option value="KHI"{% if speaker == "KHI" %} selected {% endif %}>HOLDER, Frederick</option>
+                            <option value="CH4"{% if speaker == "CH4" %} selected {% endif %}>HOLDING, Clyde</option>
+                            <option value="KHL"{% if speaker == "KHL" %} selected {% endif %}>HOLLOWAY, Edward</option>
+                            <option value="KHO"{% if speaker == "KHO" %} selected {% endif %}>HOLMAN, William</option>
+                            <option value="009MC"{% if speaker == "009MC" %} selected {% endif %}>HOLT, Harold</option>
+                            <option value="KHQ"{% if speaker == "KHQ" %} selected {% endif %}>HOLT, Robert</option>
+                            <option value="KHS"{% if speaker == "KHS" %} selected {% endif %}>HOLTEN, Rendle</option>
+                            <option value="ZD4"{% if speaker == "ZD4" %} selected {% endif %}>HOWARD, John</option>
+                            <option value="EH4"{% if speaker == "EH4" %} selected {% endif %}>HOWE, Brian</option>
+                            <option value="KHU"{% if speaker == "KHU" %} selected {% endif %}>HOWE, Robert</option>
+                            <option value="KHY"{% if speaker == "KHY" %} selected {% endif %}>HOWSE, John</option>
+                            <option value="KI7"{% if speaker == "KI7" %} selected {% endif %}>HOWSE, Neville</option>
+                            <option value="0095J"{% if speaker == "0095J" %} selected {% endif %}>HOWSON, Peter</option>
+                            <option value="IIS"{% if speaker == "IIS" %} selected {% endif %}>HUGHES, Tom</option>
+                            <option value="DQC"{% if speaker == "DQC" %} selected {% endif %}>HUGHES, William Morris</option>
+                            <option value="KIF"{% if speaker == "KIF" %} selected {% endif %}>HULME, Alan</option>
+                            <option value="FH4"{% if speaker == "FH4" %} selected {% endif %}>HUMPHREYS, Ben</option>
+                            <option value="GH4"{% if speaker == "GH4" %} selected {% endif %}>HUNT, Ralph</option>
+                            <option value="KIO"{% if speaker == "KIO" %} selected {% endif %}>HUNTER, James</option>
+                            <option value="AV4"{% if speaker == "AV4" %} selected {% endif %}>HURFORD, Chris</option>
+                            <option value="KIR"{% if speaker == "KIR" %} selected {% endif %}>HURRY, Geoffry</option>
+                            <option value="KIU"{% if speaker == "KIU" %} selected {% endif %}>HUTCHIN, Arthur</option>
+                            <option value="KIX"{% if speaker == "KIX" %} selected {% endif %}>HUTCHINSON, William</option>
+                            <option value="KJ8"{% if speaker == "KJ8" %} selected {% endif %}>HUTCHISON, James</option>
+                            <option value="9W4"{% if speaker == "9W4" %} selected {% endif %}>HYDE, John</option>
+                            <option value="KJA"{% if speaker == "KJA" %} selected {% endif %}>INNES, Urquhart</option>
+                            <option value="KJC"{% if speaker == "KJC" %} selected {% endif %}>IRVINE, Hans</option>
+                            <option value="KJE"{% if speaker == "KJE" %} selected {% endif %}>IRVINE, William</option>
+                            <option value="KJG"{% if speaker == "KJG" %} selected {% endif %}>IRWIN, Leslie</option>
+                            <option value="KJI"{% if speaker == "KJI" %} selected {% endif %}>ISAACS, Isaac</option>
+                            <option value="KJK"{% if speaker == "KJK" %} selected {% endif %}>JACK, William</option>
+                            <option value="KJM"{% if speaker == "KJM" %} selected {% endif %}>JACKSON, David</option>
+                            <option value="CV4"{% if speaker == "CV4" %} selected {% endif %}>JACOBI, Ralph</option>
+                            <option value="KJO"{% if speaker == "KJO" %} selected {% endif %}>JAMES, Albert</option>
+                            <option value="KJQ"{% if speaker == "KJQ" %} selected {% endif %}>JAMES, Rowland</option>
+                            <option value="KJU"{% if speaker == "KJU" %} selected {% endif %}>JARMAN, Alan</option>
+                            <option value="DRW"{% if speaker == "DRW" %} selected {% endif %}>JENKINS, Harry</option>
+                            <option value="KK7"{% if speaker == "KK7" %} selected {% endif %}>JENNINGS, John</option>
+                            <option value="KK9"{% if speaker == "KK9" %} selected {% endif %}>JENSEN, Jens</option>
+                            <option value="KKB"{% if speaker == "KKB" %} selected {% endif %}>JESS, John</option>
+                            <option value="KKD"{% if speaker == "KKD" %} selected {% endif %}>JESSOP, Donald</option>
+                            <option value="K99"{% if speaker == "K99" %} selected {% endif %}>JOHNSON, Elliot</option>
+                            <option value="K9G"{% if speaker == "K9G" %} selected {% endif %}>JOHNSON, Herbert</option>
+                            <option value="K9J"{% if speaker == "K9J" %} selected {% endif %}>JOHNSON, Leonard</option>
+                            <option value="K9M"{% if speaker == "K9M" %} selected {% endif %}>JOHNSON, Leslie</option>
+                            <option value="K9O"{% if speaker == "K9O" %} selected {% endif %}>JOHNSON, Peter</option>
+                            <option value="K9R"{% if speaker == "K9R" %} selected {% endif %}>JOHNSON, William</option>
+                            <option value="KP8"{% if speaker == "KP8" %} selected {% endif %}>JOHNSTON, Edward</option>
+                            <option value="K9V"{% if speaker == "K9V" %} selected {% endif %}>JOHNSTON, James</option>
+                            <option value="KA7"{% if speaker == "KA7" %} selected {% endif %}>JOLLEY, Edward</option>
+                            <option value="KA9"{% if speaker == "KA9" %} selected {% endif %}>JOLLY, William</option>
+                            <option value="KAB"{% if speaker == "KAB" %} selected {% endif %}>JONES, Andrew</option>
+                            <option value="KH4"{% if speaker == "KH4" %} selected {% endif %}>JONES, Barry</option>
+                            <option value="KDV"{% if speaker == "KDV" %} selected {% endif %}>JONES, Charles</option>
+                            <option value="KDW"{% if speaker == "KDW" %} selected {% endif %}>JONES, Paul</option>
+                            <option value="KDX"{% if speaker == "KDX" %} selected {% endif %}>JOSHUA, Robert</option>
+                            <option value="KDY"{% if speaker == "KDY" %} selected {% endif %}>JOSKE, Percy</option>
+                            <option value="KDZ"{% if speaker == "KDZ" %} selected {% endif %}>JOWETT, Edmund</option>
+                            <option value="MH4"{% if speaker == "MH4" %} selected {% endif %}>JULL, David</option>
+                            <option value="KPA"{% if speaker == "KPA" %} selected {% endif %}>KANE, John</option>
+                            <option value="1V5"{% if speaker == "1V5" %} selected {% endif %}>KATTER, Bob</option>
+                            <option value="KPC"{% if speaker == "KPC" %} selected {% endif %}>KATZ, Frederick</option>
+                            <option value="KE4"{% if speaker == "KE4" %} selected {% endif %}>KEANE, Richard</option>
+                            <option value="KE7"{% if speaker == "KE7" %} selected {% endif %}>KEARNEY, Victor</option>
+                            <option value="KPE"{% if speaker == "KPE" %} selected {% endif %}>KEATING, John</option>
+                            <option value="NH4"{% if speaker == "NH4" %} selected {% endif %}>KEATING, Paul</option>
+                            <option value="KPG"{% if speaker == "KPG" %} selected {% endif %}>KEEFFE, James</option>
+                            <option value="KE8"{% if speaker == "KE8" %} selected {% endif %}>KEKWICK, Bruce</option>
+                            <option value="009MM"{% if speaker == "009MM" %} selected {% endif %}>KELLY, Bert</option>
+                            <option value="OH4"{% if speaker == "OH4" %} selected {% endif %}>KELLY, Ros</option>
+                            <option value="KEA"{% if speaker == "KEA" %} selected {% endif %}>KELLY, William</option>
+                            <option value="KPI"{% if speaker == "KPI" %} selected {% endif %}>KENDALL, Roy</option>
+                            <option value="KEB"{% if speaker == "KEB" %} selected {% endif %}>KENDELL, William</option>
+                            <option value="KEC"{% if speaker == "KEC" %} selected {% endif %}>KENNEDY, Andrew</option>
+                            <option value="KED"{% if speaker == "KED" %} selected {% endif %}>KENNEDY, Thomas</option>
+                            <option value="KPK"{% if speaker == "KPK" %} selected {% endif %}>KENNELLY, Patrick</option>
+                            <option value="KEE"{% if speaker == "KEE" %} selected {% endif %}>KENT HUGHES, Wilfrid</option>
+                            <option value="PH4"{% if speaker == "PH4" %} selected {% endif %}>KENT, Lewis</option>
+                            <option value="KEI"{% if speaker == "KEI" %} selected {% endif %}>KEOGH, Leonard</option>
+                            <option value="KEJ"{% if speaker == "KEJ" %} selected {% endif %}>KEON, Standish</option>
+                            <option value="KEK"{% if speaker == "KEK" %} selected {% endif %}>KERBY, Edwin</option>
+                            <option value="QH4"{% if speaker == "QH4" %} selected {% endif %}>KERIN, John</option>
+                            <option value="KPO"{% if speaker == "KPO" %} selected {% endif %}>KILGARIFF, Bernard</option>
+                            <option value="4U4"{% if speaker == "4U4" %} selected {% endif %}>KILLEN, James</option>
+                            <option value="KEQ"{% if speaker == "KEQ" %} selected {% endif %}>KILLEN, William</option>
+                            <option value="KET"{% if speaker == "KET" %} selected {% endif %}>KING, Robert</option>
+                            <option value="KPQ"{% if speaker == "KPQ" %} selected {% endif %}>KINGSMILL, Walter</option>
+                            <option value="KEW"{% if speaker == "KEW" %} selected {% endif %}>KINGSTON, Charles</option>
+                            <option value="KGN"{% if speaker == "KGN" %} selected {% endif %}>KIRWAN, Frank</option>
+                            <option value="KYR"{% if speaker == "KYR" %} selected {% endif %}>KIRWAN, John</option>
+                            <option value="SH4"{% if speaker == "SH4" %} selected {% endif %}>KLUGMAN, Dick</option>
+                            <option value="KPT"{% if speaker == "KPT" %} selected {% endif %}>KNEEBONE, Henry</option>
+                            <option value="KPV"{% if speaker == "KPV" %} selected {% endif %}>KNIGHT, John</option>
+                            <option value="KYT"{% if speaker == "KYT" %} selected {% endif %}>KNOX, William</option>
+                            <option value="KZ6"{% if speaker == "KZ6" %} selected {% endif %}>LACEY, Andrew</option>
+                            <option value="KPZ"{% if speaker == "KPZ" %} selected {% endif %}>LACEY, Robert</option>
+                            <option value="KQD"{% if speaker == "KQD" %} selected {% endif %}>LAJOVIC, Milivoj</option>
+                            <option value="JG4"{% if speaker == "JG4" %} selected {% endif %}>LAMB, Tony</option>
+                            <option value="KZ8"{% if speaker == "KZ8" %} selected {% endif %}>LAMBERT, William</option>
+                            <option value="KZC"{% if speaker == "KZC" %} selected {% endif %}>LAMOND, Hector</option>
+                            <option value="KQF"{% if speaker == "KQF" %} selected {% endif %}>LAMP, Charles</option>
+                            <option value="KZF"{% if speaker == "KZF" %} selected {% endif %}>LANE, Albert</option>
+                            <option value="KZJ"{% if speaker == "KZJ" %} selected {% endif %}>LANG, John</option>
+                            <option value="KZN"{% if speaker == "KZN" %} selected {% endif %}>LANGTRY, Joseph</option>
+                            <option value="KQH"{% if speaker == "KQH" %} selected {% endif %}>LARGE, William</option>
+                            <option value="KQL"{% if speaker == "KQL" %} selected {% endif %}>LATHAM, Charles</option>
+                            <option value="KZO"{% if speaker == "KZO" %} selected {% endif %}>LATHAM, John</option>
+                            <option value="KQN"{% if speaker == "KQN" %} selected {% endif %}>LAUCKE, Condor</option>
+                            <option value="KQQ"{% if speaker == "KQQ" %} selected {% endif %}>LAUGHT, Keith</option>
+                            <option value="KZU"{% if speaker == "KZU" %} selected {% endif %}>LAVELLE, Thomas</option>
+                            <option value="KZW"{% if speaker == "KZW" %} selected {% endif %}>LAWRENCE, William</option>
+                            <option value="KQV"{% if speaker == "KQV" %} selected {% endif %}>LAWRIE, Alexander</option>
+                            <option value="KZX"{% if speaker == "KZX" %} selected {% endif %}>LAWSON, George</option>
+                            <option value="KQZ"{% if speaker == "KQZ" %} selected {% endif %}>LAWSON, Harry</option>
+                            <option value="KZZ"{% if speaker == "KZZ" %} selected {% endif %}>LAWSON, John</option>
+                            <option value="L07"{% if speaker == "L07" %} selected {% endif %}>LAZZARINI, Hubert</option>
+                            <option value="KR9"{% if speaker == "KR9" %} selected {% endif %}>LECKIE, John</option>
+                            <option value="L0R"{% if speaker == "L0R" %} selected {% endif %}>LEE, Henry</option>
+                            <option value="L0U"{% if speaker == "L0U" %} selected {% endif %}>LEE, Mervyn</option>
+                            <option value="L0X"{% if speaker == "L0X" %} selected {% endif %}>LEMMON, Nelson</option>
+                            <option value="L19"{% if speaker == "L19" %} selected {% endif %}>LESLIE, Hugh</option>
+                            <option value="L1C"{% if speaker == "L1C" %} selected {% endif %}>LEWIS, Arthur</option>
+                            <option value="NG4"{% if speaker == "NG4" %} selected {% endif %}>LEWIS, Austin</option>
+                            <option value="L1G"{% if speaker == "L1G" %} selected {% endif %}>LEY, Thomas</option>
+                            <option value="L1H"{% if speaker == "L1H" %} selected {% endif %}>LIDDELL, Frank</option>
+                            <option value="KRG"{% if speaker == "KRG" %} selected {% endif %}>LILLICO, Alexander</option>
+                            <option value="L1I"{% if speaker == "L1I" %} selected {% endif %}>LINDSAY, Robert</option>
+                            <option value="L1J"{% if speaker == "L1J" %} selected {% endif %}>LISTER, John</option>
+                            <option value="KRU"{% if speaker == "KRU" %} selected {% endif %}>LITTLE, John</option>
+                            <option value="KI9"{% if speaker == "KI9" %} selected {% endif %}>LIVINGSTON, John</option>
+                            <option value="2E4"{% if speaker == "2E4" %} selected {% endif %}>LLOYD, Bruce</option>
+                            <option value="KRX"{% if speaker == "KRX" %} selected {% endif %}>LONG, James</option>
+                            <option value="KIB"{% if speaker == "KIB" %} selected {% endif %}>LONG, William</option>
+                            <option value="KIC"{% if speaker == "KIC" %} selected {% endif %}>LONSDALE, Edmund</option>
+                            <option value="KID"{% if speaker == "KID" %} selected {% endif %}>LUCHETTI, Anthony</option>
+                            <option value="KIE"{% if speaker == "KIE" %} selected {% endif %}>LUCK, Aubrey</option>
+                            <option value="KIH"{% if speaker == "KIH" %} selected {% endif %}>LUCOCK, Philip</option>
+                            <option value="KIK"{% if speaker == "KIK" %} selected {% endif %}>LUSHER, Stephen</option>
+                            <option value="KIL"{% if speaker == "KIL" %} selected {% endif %}>LYNCH, John</option>
+                            <option value="KRZ"{% if speaker == "KRZ" %} selected {% endif %}>LYNCH, Patrick</option>
+                            <option value="KIM"{% if speaker == "KIM" %} selected {% endif %}>LYNCH, Phillip</option>
+                            <option value="KIN"{% if speaker == "KIN" %} selected {% endif %}>LYNE, William</option>
+                            <option value="J7U"{% if speaker == "J7U" %} selected {% endif %}>LYONS, Enid</option>
+                            <option value="F4O"{% if speaker == "F4O" %} selected {% endif %}>LYONS, Joseph Aloysius</option>
+                            <option value="KS7"{% if speaker == "KS7" %} selected {% endif %}>MACDONALD, Allan</option>
+                            <option value="KS9"{% if speaker == "KS9" %} selected {% endif %}>MACDONALD, John Valentine</option>
+                            <option value="KIQ"{% if speaker == "KIQ" %} selected {% endif %}>MACDONALD-PATERSON, Thomas</option>
+                            <option value="KSH"{% if speaker == "KSH" %} selected {% endif %}>MACFARLANE, James</option>
+                            <option value="YH4"{% if speaker == "YH4" %} selected {% endif %}>MACGIBBON, David</option>
+                            <option value="KIT"{% if speaker == "KIT" %} selected {% endif %}>MACKAY, George</option>
+                            <option value="KIW"{% if speaker == "KIW" %} selected {% endif %}>MACKAY, Malcolm</option>
+                            <option value="0I4"{% if speaker == "0I4" %} selected {% endif %}>MACKELLAR, Michael</option>
+                            <option value="KKT"{% if speaker == "KKT" %} selected {% endif %}>MACKENZIE, Alexander</option>
+                            <option value="KKU"{% if speaker == "KKU" %} selected {% endif %}>MACKINNON, Ewen</option>
+                            <option value="6I4"{% if speaker == "6I4" %} selected {% endif %}>MACPHEE, Ian</option>
+                            <option value="KSL"{% if speaker == "KSL" %} selected {% endif %}>MAHER, Edmund</option>
+                            <option value="KLB"{% if speaker == "KLB" %} selected {% endif %}>MAHON, Hugh</option>
+                            <option value="KLC"{% if speaker == "KLC" %} selected {% endif %}>MAHONEY, Gerald</option>
+                            <option value="KLG"{% if speaker == "KLG" %} selected {% endif %}>MAHONY, William</option>
+                            <option value="KLJ"{% if speaker == "KLJ" %} selected {% endif %}>MAISEY, Donald</option>
+                            <option value="KLL"{% if speaker == "KLL" %} selected {% endif %}>MAKIN, Norman</option>
+                            <option value="KLM"{% if speaker == "KLM" %} selected {% endif %}>MALONEY, William</option>
+                            <option value="KMM"{% if speaker == "KMM" %} selected {% endif %}>MANIFOLD, James</option>
+                            <option value="KMQ"{% if speaker == "KMQ" %} selected {% endif %}>MANN, Edward</option>
+                            <option value="KMS"{% if speaker == "KMS" %} selected {% endif %}>MANNING, Arthur</option>
+                            <option value="KMU"{% if speaker == "KMU" %} selected {% endif %}>MARKS, Walter</option>
+                            <option value="KMW"{% if speaker == "KMW" %} selected {% endif %}>MARR, Charles</option>
+                            <option value="KSN"{% if speaker == "KSN" %} selected {% endif %}>MARRIOTT, John</option>
+                            <option value="KMZ"{% if speaker == "KMZ" %} selected {% endif %}>MARTENS, George</option>
+                            <option value="KN9"{% if speaker == "KN9" %} selected {% endif %}>MARTIN, Vincent</option>
+                            <option value="KNA"{% if speaker == "KNA" %} selected {% endif %}>MARTYR, John</option>
+                            <option value="KNC"{% if speaker == "KNC" %} selected {% endif %}>MARWICK, Thomas</option>
+                            <option value="L8O"{% if speaker == "L8O" %} selected {% endif %}>MASON, Colin</option>
+                            <option value="KNF"{% if speaker == "KNF" %} selected {% endif %}>MASSY-GREENE, Walter</option>
+                            <option value="KSQ"{% if speaker == "KSQ" %} selected {% endif %}>MATHESON, Alexander</option>
+                            <option value="KOE"{% if speaker == "KOE" %} selected {% endif %}>MATHEWS, Charles</option>
+                            <option value="KNH"{% if speaker == "KNH" %} selected {% endif %}>MATHEWS, James</option>
+                            <option value="KSS"{% if speaker == "KSS" %} selected {% endif %}>MATTNER, Edward</option>
+                            <option value="KNJ"{% if speaker == "KNJ" %} selected {% endif %}>MAUGER, Samuel</option>
+                            <option value="KSU"{% if speaker == "KSU" %} selected {% endif %}>MAUGHAN, William</option>
+                            <option value="KSW"{% if speaker == "KSW" %} selected {% endif %}>MAUNSELL, Charles</option>
+                            <option value="KNP"{% if speaker == "KNP" %} selected {% endif %}>MAXWELL, George</option>
+                            <option value="KSY"{% if speaker == "KSY" %} selected {% endif %}>MCAULIFFE, Ronald</option>
+                            <option value="KOL"{% if speaker == "KOL" %} selected {% endif %}>MCBRIDE, Philip</option>
+                            <option value="KOQ"{% if speaker == "KOQ" %} selected {% endif %}>MCCALL, William</option>
+                            <option value="KT8"{% if speaker == "KT8" %} selected {% endif %}>MCCALLUM, John</option>
+                            <option value="KPM"{% if speaker == "KPM" %} selected {% endif %}>MCCAY, James</option>
+                            <option value="KTA"{% if speaker == "KTA" %} selected {% endif %}>MCCLELLAND, Douglas</option>
+                            <option value="KPN"{% if speaker == "KPN" %} selected {% endif %}>MCCLELLAND, Hugh</option>
+                            <option value="5U4"{% if speaker == "5U4" %} selected {% endif %}>MCCLELLAND, Jim</option>
+                            <option value="KQ4"{% if speaker == "KQ4" %} selected {% endif %}>MCCOLL, James</option>
+                            <option value="KQJ"{% if speaker == "KQJ" %} selected {% endif %}>MCCOLM, Malcolm</option>
+                            <option value="KQK"{% if speaker == "KQK" %} selected {% endif %}>MCDONALD, Allan</option>
+                            <option value="KQP"{% if speaker == "KQP" %} selected {% endif %}>MCDONALD, Charles</option>
+                            <option value="KQS"{% if speaker == "KQS" %} selected {% endif %}>MCDONALD, Frederick</option>
+                            <option value="KTD"{% if speaker == "KTD" %} selected {% endif %}>MCDOUGALL, Allan</option>
+                            <option value="KQT"{% if speaker == "KQT" %} selected {% endif %}>MCDOUGALL, John</option>
+                            <option value="KQU"{% if speaker == "KQU" %} selected {% endif %}>MCEACHARN, Malcolm</option>
+                            <option value="009MB"{% if speaker == "009MB" %} selected {% endif %}>MCEWEN, John</option>
+                            <option value="KRD"{% if speaker == "KRD" %} selected {% endif %}>MCGRATH, David</option>
+                            <option value="KTF"{% if speaker == "KTF" %} selected {% endif %}>MCGREGOR, Gregor</option>
+                            <option value="KRF"{% if speaker == "KRF" %} selected {% endif %}>MCGUREN, Francis</option>
+                            <option value="KTH"{% if speaker == "KTH" %} selected {% endif %}>MCHUGH, Charles</option>
+                            <option value="KRH"{% if speaker == "KRH" %} selected {% endif %}>MCHUGH, Sydney</option>
+                            <option value="KTJ"{% if speaker == "KTJ" %} selected {% endif %}>MCINTOSH, Gordon</option>
+                            <option value="KRK"{% if speaker == "KRK" %} selected {% endif %}>MCIVOR, Hector</option>
+                            <option value="KTL"{% if speaker == "KTL" %} selected {% endif %}>MCKELLAR, Gerald</option>
+                            <option value="KTN"{% if speaker == "KTN" %} selected {% endif %}>MCKENNA, Nicholas</option>
+                            <option value="KTP"{% if speaker == "KTP" %} selected {% endif %}>MCKISSOCK, Andrew</option>
+                            <option value="KTR"{% if speaker == "KTR" %} selected {% endif %}>MCLACHLAN, Alexander</option>
+                            <option value="KTX"{% if speaker == "KTX" %} selected {% endif %}>MCLACHLAN, James</option>
+                            <option value="KTZ"{% if speaker == "KTZ" %} selected {% endif %}>MCLAREN, Geoffrey</option>
+                            <option value="KRO"{% if speaker == "KRO" %} selected {% endif %}>MCLEAN, Allan</option>
+                            <option value="KRP"{% if speaker == "KRP" %} selected {% endif %}>MCLEAN, Francis</option>
+                            <option value="KRR"{% if speaker == "KRR" %} selected {% endif %}>MCLEAN, Ross</option>
+                            <option value="KUA"{% if speaker == "KUA" %} selected {% endif %}>MCLEAY, George</option>
+                            <option value="KSC"{% if speaker == "KSC" %} selected {% endif %}>MCLEAY, John</option>
+                            <option value="KSB"{% if speaker == "KSB" %} selected {% endif %}>MCLEAY, John Elden</option>
+                            <option value="4I4"{% if speaker == "4I4" %} selected {% endif %}>MCLEAY, Leo</option>
+                            <option value="KSD"{% if speaker == "KSD" %} selected {% endif %}>MCLEOD, Donald</option>
+                            <option value="KSF"{% if speaker == "KSF" %} selected {% endif %}>MCMAHON, James</option>
+                            <option value="009MA"{% if speaker == "009MA" %} selected {% endif %}>MCMAHON, William</option>
+                            <option value="KUD"{% if speaker == "KUD" %} selected {% endif %}>MCMANUS, Francis</option>
+                            <option value="L2G"{% if speaker == "L2G" %} selected {% endif %}>MCMILLAN, William</option>
+                            <option value="KUH"{% if speaker == "KUH" %} selected {% endif %}>MCMULLIN, Alister</option>
+                            <option value="JT7"{% if speaker == "JT7" %} selected {% endif %}>MCNEILL, John</option>
+                            <option value="JT8"{% if speaker == "JT8" %} selected {% endif %}>MCNEILL, Neil</option>
+                            <option value="JTB"{% if speaker == "JTB" %} selected {% endif %}>MCNICOLL, Walter</option>
+                            <option value="JUR"{% if speaker == "JUR" %} selected {% endif %}>MCTIERNAN, Edward</option>
+                            <option value="JUS"{% if speaker == "JUS" %} selected {% endif %}>MCVEIGH, Tom</option>
+                            <option value="JUV"{% if speaker == "JUV" %} selected {% endif %}>MCWILLIAMS, William</option>
+                            <option value="KUJ"{% if speaker == "KUJ" %} selected {% endif %}>MELZER, Jean</option>
+                            <option value="N76"{% if speaker == "N76" %} selected {% endif %}>MENZIES, Robert</option>
+                            <option value="9I4"{% if speaker == "9I4" %} selected {% endif %}>MESSNER, Tony</option>
+                            <option value="CI4"{% if speaker == "CI4" %} selected {% endif %}>MILLAR, Clarrie</option>
+                            <option value="KUL"{% if speaker == "KUL" %} selected {% endif %}>MILLEN, Edward</option>
+                            <option value="KUP"{% if speaker == "KUP" %} selected {% endif %}>MILLEN, John</option>
+                            <option value="KUS"{% if speaker == "KUS" %} selected {% endif %}>MILLINER, Bertie</option>
+                            <option value="DI4"{% if speaker == "DI4" %} selected {% endif %}>MILTON, Peter</option>
+                            <option value="JUX"{% if speaker == "JUX" %} selected {% endif %}>MINOGUE, Daniel</option>
+                            <option value="KUU"{% if speaker == "KUU" %} selected {% endif %}>MISSEN, Alan</option>
+                            <option value="L4X"{% if speaker == "L4X" %} selected {% endif %}>MOLONEY, Parker</option>
+                            <option value="JV8"{% if speaker == "JV8" %} selected {% endif %}>MONAGHAN, James</option>
+                            <option value="KUY"{% if speaker == "KUY" %} selected {% endif %}>MOONEY, Patrick</option>
+                            <option value="EI4"{% if speaker == "EI4" %} selected {% endif %}>MOORE, John</option>
+                            <option value="JV9"{% if speaker == "JV9" %} selected {% endif %}>MORGAN, Arthur</option>
+                            <option value="JVA"{% if speaker == "JVA" %} selected {% endif %}>MORGAN, Charles</option>
+                            <option value="KV9"{% if speaker == "KV9" %} selected {% endif %}>MORRIS, Kenneth</option>
+                            <option value="HI4"{% if speaker == "HI4" %} selected {% endif %}>MORRIS, Peter</option>
+                            <option value="009DB"{% if speaker == "009DB" %} selected {% endif %}>MORRISON, Bill</option>
+                            <option value="KVB"{% if speaker == "KVB" %} selected {% endif %}>MORROW, William</option>
+                            <option value="JVB"{% if speaker == "JVB" %} selected {% endif %}>MORTIMER, Jack</option>
+                            <option value="JVD"{% if speaker == "JVD" %} selected {% endif %}>MOUNTFORD, John</option>
+                            <option value="JVH"{% if speaker == "JVH" %} selected {% endif %}>MOUNTJOY, Donald</option>
+                            <option value="JVJ"{% if speaker == "JVJ" %} selected {% endif %}>MULCAHY, Daniel</option>
+                            <option value="KVD"{% if speaker == "KVD" %} selected {% endif %}>MULCAHY, Edward</option>
+                            <option value="JVK"{% if speaker == "JVK" %} selected {% endif %}>MULDER, Allan</option>
+                            <option value="KVH"{% if speaker == "KVH" %} selected {% endif %}>MULLAN, John</option>
+                            <option value="JVM"{% if speaker == "JVM" %} selected {% endif %}>MULLENS, John</option>
+                            <option value="KVK"{% if speaker == "KVK" %} selected {% endif %}>MULVIHILL, James</option>
+                            <option value="JVO"{% if speaker == "JVO" %} selected {% endif %}>MUNRO, Dugald</option>
+                            <option value="1L5"{% if speaker == "1L5" %} selected {% endif %}>MURPHY, Lionel</option>
+                            <option value="JVQ"{% if speaker == "JVQ" %} selected {% endif %}>MURRAY, John</option>
+                            <option value="JXC"{% if speaker == "JXC" %} selected {% endif %}>MURRAY, Reginald</option>
+                            <option value="22251"{% if speaker == "22251" %} selected {% endif %}>McKENZIE, David Charles</option>
+                            <option value="JVR"{% if speaker == "JVR" %} selected {% endif %}>NAIRN, Walter</option>
+                            <option value="JXE"{% if speaker == "JXE" %} selected {% endif %}>NASH, Richard</option>
+                            <option value="JXG"{% if speaker == "JXG" %} selected {% endif %}>NEAL, Laurence</option>
+                            <option value="JXJ"{% if speaker == "JXJ" %} selected {% endif %}>NEEDHAM, Edward</option>
+                            <option value="JXM"{% if speaker == "JXM" %} selected {% endif %}>NEGUS, Sydney</option>
+                            <option value="JVS"{% if speaker == "JVS" %} selected {% endif %}>NEIL, Maurice</option>
+                            <option value="JXT"{% if speaker == "JXT" %} selected {% endif %}>NEILD, John</option>
+                            <option value="JVT"{% if speaker == "JVT" %} selected {% endif %}>NELSON, Harold</option>
+                            <option value="JVU"{% if speaker == "JVU" %} selected {% endif %}>NELSON, John</option>
+                            <option value="JXV"{% if speaker == "JXV" %} selected {% endif %}>NEWLANDS, John</option>
+                            <option value="JVV"{% if speaker == "JVV" %} selected {% endif %}>NEWMAN, Kevin</option>
+                            <option value="K4U"{% if speaker == "K4U" %} selected {% endif %}>NICHOLLS, Martin</option>
+                            <option value="K4W"{% if speaker == "K4W" %} selected {% endif %}>NICHOLLS, Samuel</option>
+                            <option value="JY6"{% if speaker == "JY6" %} selected {% endif %}>NICHOLLS, Theophilus</option>
+                            <option value="009OD"{% if speaker == "009OD" %} selected {% endif %}>NIXON, Peter</option>
+                            <option value="K4X"{% if speaker == "K4X" %} selected {% endif %}>NOCK, Horace</option>
+                            <option value="K4Y"{% if speaker == "K4Y" %} selected {% endif %}>NOTT, Lewis</option>
+                            <option value="K4Z"{% if speaker == "K4Z" %} selected {% endif %}>O'BRIEN, Reginald</option>
+                            <option value="JYA"{% if speaker == "JYA" %} selected {% endif %}>O'BYRNE, Justin</option>
+                            <option value="JYD"{% if speaker == "JYD" %} selected {% endif %}>O'CONNOR, Richard</option>
+                            <option value="K58"{% if speaker == "K58" %} selected {% endif %}>O'CONNOR, William</option>
+                            <option value="JYY"{% if speaker == "JYY" %} selected {% endif %}>O'FLAHERTY, Sidney</option>
+                            <option value="JZ6"{% if speaker == "JZ6" %} selected {% endif %}>O'HALLORAN, Michael</option>
+                            <option value="JZ9"{% if speaker == "JZ9" %} selected {% endif %}>O'KEEFE, David</option>
+                            <option value="K5A"{% if speaker == "K5A" %} selected {% endif %}>O'KEEFE, Frank</option>
+                            <option value="JZC"{% if speaker == "JZC" %} selected {% endif %}>O'LOGHLIN, James</option>
+                            <option value="K5D"{% if speaker == "K5D" %} selected {% endif %}>O'MALLEY, King</option>
+                            <option value="JZI"{% if speaker == "JZI" %} selected {% endif %}>O'SULLIVAN, Neil</option>
+                            <option value="JZM"{% if speaker == "JZM" %} selected {% endif %}>OAKES, Charles</option>
+                            <option value="JZR"{% if speaker == "JZR" %} selected {% endif %}>OGDEN, James</option>
+                            <option value="KM8"{% if speaker == "KM8" %} selected {% endif %}>OLDMEADOW, Maxwell</option>
+                            <option value="KM9"{% if speaker == "KM9" %} selected {% endif %}>OLLEY, Frank</option>
+                            <option value="KMB"{% if speaker == "KMB" %} selected {% endif %}>OPPERMAN, Hubert</option>
+                            <option value="KMC"{% if speaker == "KMC" %} selected {% endif %}>ORCHARD, Richard</option>
+                            <option value="JZU"{% if speaker == "JZU" %} selected {% endif %}>ORMONDE, James</option>
+                            <option value="KMD"{% if speaker == "KMD" %} selected {% endif %}>OSBORNE, Frederick</option>
+                            <option value="KXN"{% if speaker == "KXN" %} selected {% endif %}>OZANNE, Alfred</option>
+                            <option value="C7E"{% if speaker == "C7E" %} selected {% endif %}>PAGE, Earle</option>
+                            <option value="KXO"{% if speaker == "KXO" %} selected {% endif %}>PAGE, James</option>
+                            <option value="KXP"{% if speaker == "KXP" %} selected {% endif %}>PALMER, Albert</option>
+                            <option value="JZY"{% if speaker == "JZY" %} selected {% endif %}>PALTRIDGE, Shane</option>
+                            <option value="KXQ"{% if speaker == "KXQ" %} selected {% endif %}>PARKHILL, Robert</option>
+                            <option value="KXR"{% if speaker == "KXR" %} selected {% endif %}>PARSONS, Walter</option>
+                            <option value="KXS"{% if speaker == "KXS" %} selected {% endif %}>PATERSON, Alexander</option>
+                            <option value="KXT"{% if speaker == "KXT" %} selected {% endif %}>PATERSON, Thomas</option>
+                            <option value="KXU"{% if speaker == "KXU" %} selected {% endif %}>PATTEN, Robert</option>
+                            <option value="KXV"{% if speaker == "KXV" %} selected {% endif %}>PATTERSON, Rex</option>
+                            <option value="K09"{% if speaker == "K09" %} selected {% endif %}>PAYNE, Herbert</option>
+                            <option value="MI4"{% if speaker == "MI4" %} selected {% endif %}>PEACOCK, Andrew</option>
+                            <option value="K0F"{% if speaker == "K0F" %} selected {% endif %}>PEARCE, George</option>
+                            <option value="KXW"{% if speaker == "KXW" %} selected {% endif %}>PEARCE, Henry</option>
+                            <option value="KXX"{% if speaker == "KXX" %} selected {% endif %}>PEARSALL, Thomas</option>
+                            <option value="K0L"{% if speaker == "K0L" %} selected {% endif %}>PEARSON, Rex</option>
+                            <option value="KXY"{% if speaker == "KXY" %} selected {% endif %}>PERKINS, John</option>
+                            <option value="KXZ"{% if speaker == "KXZ" %} selected {% endif %}>PETERS, Edward</option>
+                            <option value="KY7"{% if speaker == "KY7" %} selected {% endif %}>PETTITT, John</option>
+                            <option value="KY8"{% if speaker == "KY8" %} selected {% endif %}>PHILLIPS, Pharez</option>
+                            <option value="K0Q"{% if speaker == "K0Q" %} selected {% endif %}>PIESSE, Edmund</option>
+                            <option value="KY9"{% if speaker == "KY9" %} selected {% endif %}>PIESSE, Frederick</option>
+                            <option value="KYA"{% if speaker == "KYA" %} selected {% endif %}>PIGOTT, Henry</option>
+                            <option value="KYB"{% if speaker == "KYB" %} selected {% endif %}>PITTARD, Alan</option>
+                            <option value="K0S"{% if speaker == "K0S" %} selected {% endif %}>PLAIN, William</option>
+                            <option value="K0X"{% if speaker == "K0X" %} selected {% endif %}>PLAYFORD, Thomas</option>
+                            <option value="K19"{% if speaker == "K19" %} selected {% endif %}>POKE, Albert</option>
+                            <option value="KYC"{% if speaker == "KYC" %} selected {% endif %}>POLLARD, Reginald</option>
+                            <option value="NI4"{% if speaker == "NI4" %} selected {% endif %}>PORTER, James</option>
+                            <option value="KYD"{% if speaker == "KYD" %} selected {% endif %}>POYNTON, Alexander</option>
+                            <option value="K1F"{% if speaker == "K1F" %} selected {% endif %}>POYSER, Arthur</option>
+                            <option value="KYE"{% if speaker == "KYE" %} selected {% endif %}>PRATTEN, Frederick</option>
+                            <option value="K1J"{% if speaker == "K1J" %} selected {% endif %}>PRATTEN, Herbert</option>
+                            <option value="KYG"{% if speaker == "KYG" %} selected {% endif %}>PRICE, Archibald</option>
+                            <option value="KYH"{% if speaker == "KYH" %} selected {% endif %}>PRICE, John</option>
+                            <option value="K1M"{% if speaker == "K1M" %} selected {% endif %}>PRIMMER, Cyril</option>
+                            <option value="K1R"{% if speaker == "K1R" %} selected {% endif %}>PROWSE, Edgar</option>
+                            <option value="KYI"{% if speaker == "KYI" %} selected {% endif %}>PROWSE, John</option>
+                            <option value="K1U"{% if speaker == "K1U" %} selected {% endif %}>PULSFORD, Edward</option>
+                            <option value="TI4"{% if speaker == "TI4" %} selected {% endif %}>PUPLICK, Chris</option>
+                            <option value="KYJ"{% if speaker == "KYJ" %} selected {% endif %}>QUICK, John</option>
+                            <option value="K1Z"{% if speaker == "K1Z" %} selected {% endif %}>RAE, Arthur</option>
+                            <option value="CAK"{% if speaker == "CAK" %} selected {% endif %}>RAE, Peter</option>
+                            <option value="K28"{% if speaker == "K28" %} selected {% endif %}>RANKIN, Annabelle</option>
+                            <option value="K2A"{% if speaker == "K2A" %} selected {% endif %}>RANKIN, George</option>
+                            <option value="K2D"{% if speaker == "K2D" %} selected {% endif %}>READY, Rudolph</option>
+                            <option value="K2G"{% if speaker == "K2G" %} selected {% endif %}>REID, Albert</option>
+                            <option value="K2J"{% if speaker == "K2J" %} selected {% endif %}>REID, Donald</option>
+                            <option value="F4P"{% if speaker == "F4P" %} selected {% endif %}>REID, George</option>
+                            <option value="KYQ"{% if speaker == "KYQ" %} selected {% endif %}>REID, Leonard</option>
+                            <option value="K2L"{% if speaker == "K2L" %} selected {% endif %}>REID, Matthew</option>
+                            <option value="K2Q"{% if speaker == "K2Q" %} selected {% endif %}>REID, Robert</option>
+                            <option value="KYS"{% if speaker == "KYS" %} selected {% endif %}>REYNOLDS, Leonard</option>
+                            <option value="KYU"{% if speaker == "KYU" %} selected {% endif %}>RICHARDSON, Peter</option>
+                            <option value="K2N"{% if speaker == "K2N" %} selected {% endif %}>RIDLEY, Clement</option>
+                            <option value="KYV"{% if speaker == "KYV" %} selected {% endif %}>RILEY, Edward</option>
+                            <option value="KYX"{% if speaker == "KYX" %} selected {% endif %}>RILEY, Edward Charles</option>
+                            <option value="KYZ"{% if speaker == "KYZ" %} selected {% endif %}>RIORDAN, David</option>
+                            <option value="KZ7"{% if speaker == "KZ7" %} selected {% endif %}>RIORDAN, Joseph</option>
+                            <option value="KZ9"{% if speaker == "KZ9" %} selected {% endif %}>RIORDAN, William</option>
+                            <option value="KZE"{% if speaker == "KZE" %} selected {% endif %}>ROBERTON, Hugh</option>
+                            <option value="KZG"{% if speaker == "KZG" %} selected {% endif %}>ROBERTS, Ernest</option>
+                            <option value="K2S"{% if speaker == "K2S" %} selected {% endif %}>ROBERTSON, Agnes</option>
+                            <option value="K2U"{% if speaker == "K2U" %} selected {% endif %}>ROBERTSON, Edward</option>
+                            <option value="K2X"{% if speaker == "K2X" %} selected {% endif %}>ROBINSON, Albert</option>
+                            <option value="KZH"{% if speaker == "KZH" %} selected {% endif %}>ROBINSON, Arthur</option>
+                            <option value="KZL"{% if speaker == "KZL" %} selected {% endif %}>ROBINSON, Eric</option>
+                            <option value="YI4"{% if speaker == "YI4" %} selected {% endif %}>ROBINSON, Ian</option>
+                            <option value="K37"{% if speaker == "K37" %} selected {% endif %}>ROBINSON, William</option>
+                            <option value="ZI4"{% if speaker == "ZI4" %} selected {% endif %}>ROCHER, Allan</option>
+                            <option value="KZT"{% if speaker == "KZT" %} selected {% endif %}>RODGERS, Arthur</option>
+                            <option value="KZV"{% if speaker == "KZV" %} selected {% endif %}>RONALD, James</option>
+                            <option value="L08"{% if speaker == "L08" %} selected {% endif %}>ROSEVEAR, John</option>
+                            <option value="L0B"{% if speaker == "L0B" %} selected {% endif %}>ROWE, Albert</option>
+                            <option value="K3B"{% if speaker == "K3B" %} selected {% endif %}>ROWELL, James</option>
+                            <option value="0J4"{% if speaker == "0J4" %} selected {% endif %}>RUDDOCK, Philip</option>
+                            <option value="L0D"{% if speaker == "L0D" %} selected {% endif %}>RUSSELL, Charles</option>
+                            <option value="L0F"{% if speaker == "L0F" %} selected {% endif %}>RUSSELL, Edgar</option>
+                            <option value="K3E"{% if speaker == "K3E" %} selected {% endif %}>RUSSELL, Edward</option>
+                            <option value="K3G"{% if speaker == "K3G" %} selected {% endif %}>RUSSELL, William</option>
+                            <option value="K3I"{% if speaker == "K3I" %} selected {% endif %}>RYAN, John</option>
+                            <option value="L0G"{% if speaker == "L0G" %} selected {% endif %}>RYAN, Rupert</option>
+                            <option value="GD5"{% if speaker == "GD5" %} selected {% endif %}>RYAN, Susan</option>
+                            <option value="L0H"{% if speaker == "L0H" %} selected {% endif %}>RYAN, Thomas</option>
+                            <option value="L0I"{% if speaker == "L0I" %} selected {% endif %}>RYRIE, Granville</option>
+                            <option value="L0J"{% if speaker == "L0J" %} selected {% endif %}>SAINSBURY, Murray</option>
+                            <option value="L0K"{% if speaker == "L0K" %} selected {% endif %}>SALMON, Charles</option>
+                            <option value="K3L"{% if speaker == "K3L" %} selected {% endif %}>SAMPSON, Burford</option>
+                            <option value="L0P"{% if speaker == "L0P" %} selected {% endif %}>SAMPSON, Sydney</option>
+                            <option value="K4S"{% if speaker == "K4S" %} selected {% endif %}>SANDFORD, Charles Walter</option>
+                            <option value="K54"{% if speaker == "K54" %} selected {% endif %}>SARGOOD, Frederick</option>
+                            <option value="K5B"{% if speaker == "K5B" %} selected {% endif %}>SAUNDERS, Henry</option>
+                            <option value="KPX"{% if speaker == "KPX" %} selected {% endif %}>SAWERS, William</option>
+                            <option value="K5F"{% if speaker == "K5F" %} selected {% endif %}>SAYERS, Robert</option>
+                            <option value="5J4"{% if speaker == "5J4" %} selected {% endif %}>SCHOLES, Gordon</option>
+                            <option value="KQ8"{% if speaker == "KQ8" %} selected {% endif %}>SCHOLFIELD, Thomas</option>
+                            <option value="K5H"{% if speaker == "K5H" %} selected {% endif %}>SCOTT, Douglas</option>
+                            <option value="7J4"{% if speaker == "7J4" %} selected {% endif %}>SCOTT, John</option>
+                            <option value="K5K"{% if speaker == "K5K" %} selected {% endif %}>SCOTT, Malcolm</option>
+                            <option value="F4Q"{% if speaker == "F4Q" %} selected {% endif %}>SCULLIN, James Henry</option>
+                            <option value="KQB"{% if speaker == "KQB" %} selected {% endif %}>SCULLY, William</option>
+                            <option value="KQW"{% if speaker == "KQW" %} selected {% endif %}>SEABROOK, Alfred</option>
+                            <option value="K5R"{% if speaker == "K5R" %} selected {% endif %}>SENIOR, William</option>
+                            <option value="K5T"{% if speaker == "K5T" %} selected {% endif %}>SEWARD, Harrie</option>
+                            <option value="KQY"{% if speaker == "KQY" %} selected {% endif %}>SEXTON, Joseph</option>
+                            <option value="9J4"{% if speaker == "9J4" %} selected {% endif %}>SHACK, Peter</option>
+                            <option value="K5V"{% if speaker == "K5V" %} selected {% endif %}>SHANNON, John</option>
+                            <option value="KR8"{% if speaker == "KR8" %} selected {% endif %}>SHARPE, James</option>
+                            <option value="KRC"{% if speaker == "KRC" %} selected {% endif %}>SHAW, George</option>
+                            <option value="K5X"{% if speaker == "K5X" %} selected {% endif %}>SHEEHAN, James</option>
+                            <option value="KRE"{% if speaker == "KRE" %} selected {% endif %}>SHEEHAN, Thomas</option>
+                            <option value="KRI"{% if speaker == "KRI" %} selected {% endif %}>SHEEHY, Thomas</option>
+                            <option value="BJ4"{% if speaker == "BJ4" %} selected {% endif %}>SHEIL, Glen</option>
+                            <option value="K5Z"{% if speaker == "K5Z" %} selected {% endif %}>SHERRINGTON, Robert</option>
+                            <option value="L8C"{% if speaker == "L8C" %} selected {% endif %}>SHERRY, Raymond</option>
+                            <option value="CJ4"{% if speaker == "CJ4" %} selected {% endif %}>SHIPTON, Roger</option>
+                            <option value="DJ4"{% if speaker == "DJ4" %} selected {% endif %}>SHORT, Jim</option>
+                            <option value="EJ4"{% if speaker == "EJ4" %} selected {% endif %}>SIBRAA, Kerry</option>
+                            <option value="K69"{% if speaker == "K69" %} selected {% endif %}>SIM, John</option>
+                            <option value="K6B"{% if speaker == "K6B" %} selected {% endif %}>SIMMONDS, Wilfrid</option>
+                            <option value="FJ4"{% if speaker == "FJ4" %} selected {% endif %}>SIMMONS, David</option>
+                            <option value="KRM"{% if speaker == "KRM" %} selected {% endif %}>SIMON, Barry</option>
+                            <option value="KRN"{% if speaker == "KRN" %} selected {% endif %}>SINCLAIR, Hugh</option>
+                            <option value="5E4"{% if speaker == "5E4" %} selected {% endif %}>SINCLAIR, Ian</option>
+                            <option value="KRQ"{% if speaker == "KRQ" %} selected {% endif %}>SKENE, Thomas</option>
+                            <option value="KRT"{% if speaker == "KRT" %} selected {% endif %}>SMITH, Albert</option>
+                            <option value="KTT"{% if speaker == "KTT" %} selected {% endif %}>SMITH, Arthur</option>
+                            <option value="K6D"{% if speaker == "K6D" %} selected {% endif %}>SMITH, Miles</option>
+                            <option value="L2I"{% if speaker == "L2I" %} selected {% endif %}>SMITH, Sydney</option>
+                            <option value="KTU"{% if speaker == "KTU" %} selected {% endif %}>SMITH, William</option>
+                            <option value="DQF"{% if speaker == "DQF" %} selected {% endif %}>SNEDDEN, Billy</option>
+                            <option value="KTV"{% if speaker == "KTV" %} selected {% endif %}>SOLOMON, Elias</option>
+                            <option value="KU8"{% if speaker == "KU8" %} selected {% endif %}>SOLOMON, Robert</option>
+                            <option value="KU9"{% if speaker == "KU9" %} selected {% endif %}>SOLOMON, Vaiben</option>
+                            <option value="KUF"{% if speaker == "KUF" %} selected {% endif %}>SPENCE, William</option>
+                            <option value="JJ4"{% if speaker == "JJ4" %} selected {% endif %}>SPENDER, John</option>
+                            <option value="KUG"{% if speaker == "KUG" %} selected {% endif %}>SPENDER, Percy</option>
+                            <option value="K6Z"{% if speaker == "K6Z" %} selected {% endif %}>SPICER, John</option>
+                            <option value="KUN"{% if speaker == "KUN" %} selected {% endif %}>SPOONER, Eric</option>
+                            <option value="K7A"{% if speaker == "K7A" %} selected {% endif %}>SPOONER, William</option>
+                            <option value="KUO"{% if speaker == "KUO" %} selected {% endif %}>SPURR, Lancelot</option>
+                            <option value="KUR"{% if speaker == "KUR" %} selected {% endif %}>ST JOHN, Edward</option>
+                            <option value="K78"{% if speaker == "K78" %} selected {% endif %}>ST LEDGER, Anthony</option>
+                            <option value="KUW"{% if speaker == "KUW" %} selected {% endif %}>STACEY, Fred</option>
+                            <option value="GY5"{% if speaker == "GY5" %} selected {% endif %}>STALEY, Tony</option>
+                            <option value="KUX"{% if speaker == "KUX" %} selected {% endif %}>STEWART, Francis</option>
+                            <option value="KV7"{% if speaker == "KV7" %} selected {% endif %}>STEWART, Frederick</option>
+                            <option value="K7D"{% if speaker == "K7D" %} selected {% endif %}>STEWART, James</option>
+                            <option value="KV8"{% if speaker == "KV8" %} selected {% endif %}>STEWART, Percy</option>
+                            <option value="KVG"{% if speaker == "KVG" %} selected {% endif %}>STOKES, Philip</option>
+                            <option value="KVJ"{% if speaker == "KVJ" %} selected {% endif %}>STORRER, David</option>
+                            <option value="K7L"{% if speaker == "K7L" %} selected {% endif %}>STORY, William</option>
+                            <option value="KVM"{% if speaker == "KVM" %} selected {% endif %}>STREET, Anthony</option>
+                            <option value="KVN"{% if speaker == "KVN" %} selected {% endif %}>STREET, Geoffrey</option>
+                            <option value="KVO"{% if speaker == "KVO" %} selected {% endif %}>STUMM, Jacob</option>
+                            <option value="K7R"{% if speaker == "K7R" %} selected {% endif %}>STYLES, James</option>
+                            <option value="KVQ"{% if speaker == "KVQ" %} selected {% endif %}>SULLIVAN, John</option>
+                            <option value="3E4"{% if speaker == "3E4" %} selected {% endif %}>SULLIVAN, Kathryn</option>
+                            <option value="KVR"{% if speaker == "KVR" %} selected {% endif %}>SWARTZ, Reginald</option>
+                            <option value="K7V"{% if speaker == "K7V" %} selected {% endif %}>SYMON, Josiah</option>
+                            <option value="6E4"{% if speaker == "6E4" %} selected {% endif %}>TAMBLING, Grant</option>
+                            <option value="K7Y"{% if speaker == "K7Y" %} selected {% endif %}>TANGNEY, Dorothy</option>
+                            <option value="K89"{% if speaker == "K89" %} selected {% endif %}>TATE, John</option>
+                            <option value="NJ4"{% if speaker == "NJ4" %} selected {% endif %}>TATE, Michael</option>
+                            <option value="PJ4"{% if speaker == "PJ4" %} selected {% endif %}>TEAGUE, Baden</option>
+                            <option value="K8D"{% if speaker == "K8D" %} selected {% endif %}>TEHAN, Thomas</option>
+                            <option value="KVS"{% if speaker == "KVS" %} selected {% endif %}>THEODORE, Edward</option>
+                            <option value="QJ4"{% if speaker == "QJ4" %} selected {% endif %}>THEOPHANOUS, Andrew</option>
+                            <option value="K8H"{% if speaker == "K8H" %} selected {% endif %}>THOMAS, Andrew</option>
+                            <option value="K8L"{% if speaker == "K8L" %} selected {% endif %}>THOMAS, Josiah</option>
+                            <option value="KVT"{% if speaker == "KVT" %} selected {% endif %}>THOMPSON, Albert</option>
+                            <option value="KVU"{% if speaker == "KVU" %} selected {% endif %}>THOMPSON, Victor</option>
+                            <option value="K8P"{% if speaker == "K8P" %} selected {% endif %}>THOMPSON, William</option>
+                            <option value="KVW"{% if speaker == "KVW" %} selected {% endif %}>THOMSON, David Alexander</option>
+                            <option value="KVY"{% if speaker == "KVY" %} selected {% endif %}>THOMSON, David Scott</option>
+                            <option value="KW6"{% if speaker == "KW6" %} selected {% endif %}>THOMSON, Dugald</option>
+                            <option value="KW8"{% if speaker == "KW8" %} selected {% endif %}>THOMSON, John</option>
+                            <option value="KWA"{% if speaker == "KWA" %} selected {% endif %}>THORBURN, Ray</option>
+                            <option value="KWC"{% if speaker == "KWC" %} selected {% endif %}>THORBY, Harold</option>
+                            <option value="KWE"{% if speaker == "KWE" %} selected {% endif %}>TIMSON, Thomas</option>
+                            <option value="K8N"{% if speaker == "K8N" %} selected {% endif %}>TOOHEY, James</option>
+                            <option value="KWH"{% if speaker == "KWH" %} selected {% endif %}>TOWNLEY, Athol</option>
+                            <option value="K8R"{% if speaker == "K8R" %} selected {% endif %}>TOWNLEY, Michael</option>
+                            <option value="KWJ"{% if speaker == "KWJ" %} selected {% endif %}>TRELOAR, Thomas</option>
+                            <option value="K8T"{% if speaker == "K8T" %} selected {% endif %}>TRENWITH, William</option>
+                            <option value="KWL"{% if speaker == "KWL" %} selected {% endif %}>TUDOR, Frank</option>
+                            <option value="KWN"{% if speaker == "KWN" %} selected {% endif %}>TULLY, James</option>
+                            <option value="K8W"{% if speaker == "K8W" %} selected {% endif %}>TURLEY, Henry</option>
+                            <option value="K8Y"{% if speaker == "K8Y" %} selected {% endif %}>TURNBULL, Reginald</option>
+                            <option value="KWP"{% if speaker == "KWP" %} selected {% endif %}>TURNBULL, Winton</option>
+                            <option value="KWT"{% if speaker == "KWT" %} selected {% endif %}>TURNER, George</option>
+                            <option value="KWR"{% if speaker == "KWR" %} selected {% endif %}>TURNER, Henry</option>
+                            <option value="K9I"{% if speaker == "K9I" %} selected {% endif %}>UPPILL, Oliver</option>
+                            <option value="EE4"{% if speaker == "EE4" %} selected {% endif %}>UREN, Tom</option>
+                            <option value="K9P"{% if speaker == "K9P" %} selected {% endif %}>VARDON, Edward</option>
+                            <option value="K9T"{% if speaker == "K9T" %} selected {% endif %}>VARDON, Joseph</option>
+                            <option value="K9Y"{% if speaker == "K9Y" %} selected {% endif %}>VERRAN, John</option>
+                            <option value="KAC"{% if speaker == "KAC" %} selected {% endif %}>VINCENT, Victor</option>
+                            <option value="EE6"{% if speaker == "EE6" %} selected {% endif %}>VINER, Ian</option>
+                            <option value="KAF"{% if speaker == "KAF" %} selected {% endif %}>WADE, Harrie</option>
+                            <option value="KAH"{% if speaker == "KAH" %} selected {% endif %}>WALKER, James</option>
+                            <option value="KWX"{% if speaker == "KWX" %} selected {% endif %}>WALLACE, Cornelius</option>
+                            <option value="KWZ"{% if speaker == "KWZ" %} selected {% endif %}>WALLIS, Laurie</option>
+                            <option value="TJ4"{% if speaker == "TJ4" %} selected {% endif %}>WALSH, Peter</option>
+                            <option value="UJ4"{% if speaker == "UJ4" %} selected {% endif %}>WALTERS, Shirley</option>
+                            <option value="KX7"{% if speaker == "KX7" %} selected {% endif %}>WARD, Edward</option>
+                            <option value="KAJ"{% if speaker == "KAJ" %} selected {% endif %}>WARD, Frederick</option>
+                            <option value="KAL"{% if speaker == "KAL" %} selected {% endif %}>WARDLAW, Robert</option>
+                            <option value="KX9"{% if speaker == "KX9" %} selected {% endif %}>WATKINS, David</option>
+                            <option value="KXB"{% if speaker == "KXB" %} selected {% endif %}>WATKINS, David Oliver</option>
+                            <option value="KAO"{% if speaker == "KAO" %} selected {% endif %}>WATSON, David</option>
+                            <option value="VJ4"{% if speaker == "VJ4" %} selected {% endif %}>WATSON, John</option>
+                            <option value="F4R"{% if speaker == "F4R" %} selected {% endif %}>WATSON, John Christian</option>
+                            <option value="KXD"{% if speaker == "KXD" %} selected {% endif %}>WATSON, William</option>
+                            <option value="KXG"{% if speaker == "KXG" %} selected {% endif %}>WATT, William</option>
+                            <option value="KXI"{% if speaker == "KXI" %} selected {% endif %}>WEBB, Charles</option>
+                            <option value="KAS"{% if speaker == "KAS" %} selected {% endif %}>WEBSTER, James</option>
+                            <option value="KXK"{% if speaker == "KXK" %} selected {% endif %}>WEBSTER, William</option>
+                            <option value="KAW"{% if speaker == "KAW" %} selected {% endif %}>WEDGWOOD, Ivy</option>
+                            <option value="DB6"{% if speaker == "DB6" %} selected {% endif %}>WENTWORTH, William Charles</option>
+                            <option value="KZA"{% if speaker == "KZA" %} selected {% endif %}>WEST, John Edward</option>
+                            <option value="XJ4"{% if speaker == "XJ4" %} selected {% endif %}>WEST, Stewart</option>
+                            <option value="KZI"{% if speaker == "KZI" %} selected {% endif %}>WHAN, Bob</option>
+                            <option value="CJO"{% if speaker == "CJO" %} selected {% endif %}>WHEELDON, John</option>
+                            <option value="KZP"{% if speaker == "KZP" %} selected {% endif %}>WHEELER, Roy</option>
+                            <option value="KZR"{% if speaker == "KZR" %} selected {% endif %}>WHITE, Thomas</option>
+                            <option value="KAZ"{% if speaker == "KAZ" %} selected {% endif %}>WHITESIDE, George</option>
+                            <option value="6U4"{% if speaker == "6U4" %} selected {% endif %}>WHITLAM, Gough</option>
+                            <option value="KZY"{% if speaker == "KZY" %} selected {% endif %}>WHITLAM, Tony</option>
+                            <option value="L0L"{% if speaker == "L0L" %} selected {% endif %}>WHITSITT, Joshua</option>
+                            <option value="L0N"{% if speaker == "L0N" %} selected {% endif %}>WHITTORN, Raymond</option>
+                            <option value="L0Q"{% if speaker == "L0Q" %} selected {% endif %}>WIENHOLT, Arnold</option>
+                            <option value="L0V"{% if speaker == "L0V" %} selected {% endif %}>WIGHT, Bruce</option>
+                            <option value="L0Y"{% if speaker == "L0Y" %} selected {% endif %}>WILKINSON, James</option>
+                            <option value="KB9"{% if speaker == "KB9" %} selected {% endif %}>WILKINSON, Lawrence</option>
+                            <option value="L17"{% if speaker == "L17" %} selected {% endif %}>WILKS, William</option>
+                            <option value="KBC"{% if speaker == "KBC" %} selected {% endif %}>WILLESEE, Don</option>
+                            <option value="L1A"{% if speaker == "L1A" %} selected {% endif %}>WILLIAMS, Thomas</option>
+                            <option value="L1D"{% if speaker == "L1D" %} selected {% endif %}>WILLIS, Henry</option>
+                            <option value="ZJ4"{% if speaker == "ZJ4" %} selected {% endif %}>WILLIS, Ralph</option>
+                            <option value="L1L"{% if speaker == "L1L" %} selected {% endif %}>WILSON, Alexander</option>
+                            <option value="0K4"{% if speaker == "0K4" %} selected {% endif %}>WILSON, Ian</option>
+                            <option value="L1N"{% if speaker == "L1N" %} selected {% endif %}>WILSON, John Gratton</option>
+                            <option value="KBH"{% if speaker == "KBH" %} selected {% endif %}>WILSON, Keith Cameron</option>
+                            <option value="KBJ"{% if speaker == "KBJ" %} selected {% endif %}>WILSON, Reginald</option>
+                            <option value="L1P"{% if speaker == "L1P" %} selected {% endif %}>WISE, George</option>
+                            <option value="DV4"{% if speaker == "DV4" %} selected {% endif %}>WITHERS, Reg</option>
+                            <option value="KBL"{% if speaker == "KBL" %} selected {% endif %}>WOOD, Ian</option>
+                            <option value="KBU"{% if speaker == "KBU" %} selected {% endif %}>WORDSWORTH, Robert</option>
+                            <option value="ISW"{% if speaker == "ISW" %} selected {% endif %}>WRIEDT, Ken</option>
+                            <option value="KBW"{% if speaker == "KBW" %} selected {% endif %}>WRIGHT, Reginald</option>
+                            <option value="L1R"{% if speaker == "L1R" %} selected {% endif %}>WYNNE, Agar</option>
+                            <option value="L1T"{% if speaker == "L1T" %} selected {% endif %}>YATES, George</option>
+                            <option value="L1V"{% if speaker == "L1V" %} selected {% endif %}>YATES, William</option>
+                            <option value="KBY"{% if speaker == "KBY" %} selected {% endif %}>YOUNG, Harold</option>
+                            <option value="EV4"{% if speaker == "EV4" %} selected {% endif %}>YOUNG, Mick</option>
+                            <option value="KC7"{% if speaker == "KC7" %} selected {% endif %}>ZEAL, William</option>
+                        </select>
+                        <input type="hidden" id="start" name="start" value="0">
+                    </div>
+                </div>
+            </div>
+        </form>
+
+        {% if results.hits %}
+        <hr>
+        <h3>Results</h3>
+        <p class="text-muted">Showing results {{ start + 1 }} to {{ start + count }} of {{ results.hits.total }}</p>
+        <nav aria-label="...">
+          <ul class="pager">
+            {% if start >= count %}
+                <li class="previous"><a href="{{ request.url | previous(start, count) }}"><span aria-hidden="true">&larr;</span> Previous</a></li>
+            {% else %}
+                <li class="previous disabled"><a href="{{ request.url }}"><span aria-hidden="true">&larr;</span> Previous</a></li>
+            {% endif %}
+            {% if start + count < results.hits.total %}
+                <li class="next"><a href="{{ request.url | next(start, count) }}">Next <span aria-hidden="true">&rarr;</span></a></li>
+            {% else %}
+                <li class="next disabled"><a href="{{ request.url }}">Next <span aria-hidden="true">&rarr;</span></a></li>
+            {% endif %}
+          </ul>
+        </nav>
+        {% for hit in results.hits.hits %}
+        <div class="media">
+            <div class="media-left">
+                {% if hit._source.speaker.id in ['10000', '20000'] %}
+                    <img class="media-object" src="/static/images/avatars/default_avatar.png" alt="Default user avatar">
+                {% else %}
+                    <img class="media-object" src="/static/images/avatars/{{ hit._source.speaker.id }}.jpg" alt="Portrait of {{ hit._source.speaker.display_name }}">
+                {% endif %}
+            </div>
+            <div class="media-body">
+                <h4 class="media-heading">{{ hit._source.speaker.display_name }}</h4>
+                <h6>In the {% if hit._source.house == "hofreps" %}House of Representatives{% else %}Senate{% endif %}, {{ hit._source.date|date('%e %B %Y') }}</h6>
+                <p>During &lsquo;{{ hit._source.debate_title }}{% if hit._source.subdebate_title %} &ndash; {{ hit._source.subdebate_title }}{% endif %}&rsquo;</p>
+                {% if hit.highlight %}
+                    <ul>
+                    {% for highlight in hit.highlight.text %}
+                        <li class="snippet">{{ highlight|safe }}</li>
+                    {% endfor %}
+                    {% for highlight in hit.highlight['text.exact'] %}
+                        <li class="snippet">{{ highlight|safe }}</li>
+                    {% endfor %}
+                    </ul>
+                {% endif %}
+                <p><a href="http://127.0.0.1:4000/{{ hit._source.house }}/{{ hit._source.year }}/{{ hit._source.filename }}/#{% if hit._source.subdebate_index is defined %}subdebate-{{ hit._source.debate_index }}-{{ hit._source.subdebate_index }}-s{{ hit._source.speech_index }}{% else %}debate-{{ hit._source.debate_index }}-s{{ hit._source.speech_index }}{% endif %}">View in context <i class="fa fa-arrow-circle-right" aria-hidden="true"></i></a></p>
+            </div>
+        </div>
+        {% endfor %}
+        <nav aria-label="...">
+          <ul class="pager">
+            {% if start >= count %}
+                <li class="previous"><a href="{{ request.url | previous(start, count) }}"><span aria-hidden="true">&larr;</span> Previous</a></li>
+            {% else %}
+                <li class="previous disabled"><a href="{{ request.url }}"><span aria-hidden="true">&larr;</span> Previous</a></li>
+            {% endif %}
+            {% if start + count < results.hits.total %}
+                <li class="next"><a href="{{ request.url | next(start, count) }}">Next <span aria-hidden="true">&rarr;</span></a></li>
+            {% else %}
+                <li class="next disabled"><a href="{{ request.url }}">Next <span aria-hidden="true">&rarr;</span></a></li>
+            {% endif %}
+          </ul>
+        </nav>
+        
+        {% endif %}
+      <footer class="site-footer">
+        <div class="pull-right">
+          <a href="http://twitter.com/wragge"><i class="fa fa-twitter-square fa-2x" aria-hidden="true"></i></a> <a href="http://github.com/wragge"><i class="fa fa-github-square fa-2x" aria-hidden="true"></i></a>
+        </div>
+          <p>Built by <a href="http://timsherratt.org">timsherratt.org</a><br>
+          <small>Hansard is licensed for reuse by the Parliament of Australia under a <a rel="license" href="http://www.aph.gov.au/Help/Disclaimer_Privacy_Copyright#c">CC-BY-NC-ND</a> licence.</small></p>
+    </footer>
+    </div>  
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+    <script src="/static/js/bootstrap.min.js"></script>
+    <script src="/static/js/moment.js"></script>
+    <script src="/static/js/bootstrap-datetimepicker.min.js"></script>
+    <script src="/static/js/script.js"></script>
+  </body>
+</html>
