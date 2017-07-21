@@ -66,9 +66,23 @@
         <form method="GET" action="/">
             <div class="row">
                 <div class="col-md-9">
-                    <div class="form-group">
-                        <label class="control-label" for="q">Words or phrases</label>
-                        <input type="text" class="form-control" id="q" name="q" placeholder="Enter keywords"{% if q %} value="{{ q }}"{% endif %}>   
+                    <div class="row">
+                        <div class="col-md-8">
+                            <div class="form-group">
+                                <label class="control-label" for="q">Words or phrases</label>
+                                <input type="text" class="form-control" id="q" name="q" placeholder="Enter keywords"{% if q %} value="{{ q }}"{% endif %}>
+
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label class="control-label" for="type">Type</label>
+                                <select class="form-control" id="type" name="type">
+                                    <option value="speeches"{% if type == "speeches" %} selected{% endif %}>Speeches</option>
+                                    <option value="debates"{% if type == "debates" %} selected{% endif %}>Debates</option>
+                                </select>
+                            </div>
+                        </div>
                     </div>
                     <div class="row">
                         <div class="col-md-4">
@@ -101,12 +115,13 @@
                                     <option value="date_asc"{% if sort == "date_asc" %} selected{% endif %}>Date (earliest first)</option>
                                     <option value="date_desc"{% if sort == "date_desc" %} selected{% endif %}>Date (latest first)</option>
                                 </select>
-                    </div>
+                            </div>
                         </div>
                     </div>
                     <div class="form-group">
                         <input class="btn btn-primary" type="submit" value="Search">
                     </div>
+                    <a href="/tips/">Search tips...</a>
                 </div>
                 <div class="col-md-3">
                     <div class="form-group">
@@ -1204,27 +1219,35 @@
         {% for hit in results.hits.hits %}
         <div class="media">
             <div class="media-left">
-                {% if hit._source.speaker.id in ['10000', '20000'] %}
-                    <img class="media-object" src="/static/images/avatars/default_avatar.png" alt="Default user avatar">
-                {% else %}
-                    <img class="media-object" src="/static/images/avatars/{{ hit._source.speaker.id }}.jpg" alt="Portrait of {{ hit._source.speaker.display_name }}">
+                {% if type == "speeches" %}
+                    {% if hit._source.speaker.id in ['10000', '20000'] %}
+                        <img class="media-object" src="/static/images/avatars/default_avatar.png" alt="Default user avatar">
+                    {% else %}
+                        <img class="media-object" src="/static/images/avatars/{{ hit._source.speaker.id }}.jpg" alt="Portrait of {{ hit._source.speaker.display_name }}">
+                    {% endif %}
                 {% endif %}
             </div>
             <div class="media-body">
-                <h4 class="media-heading">{{ hit._source.speaker.display_name }}</h4>
-                <h6>In the {% if hit._source.house == "hofreps" %}House of Representatives{% else %}Senate{% endif %}, {{ hit._source.date|date('%e %B %Y') }}</h6>
-                <p>During &lsquo;{{ hit._source.debate_title }}{% if hit._source.subdebate_title %} &ndash; {{ hit._source.subdebate_title }}{% endif %}&rsquo;</p>
-                {% if hit.highlight %}
-                    <ul>
-                    {% for highlight in hit.highlight.text %}
-                        <li class="snippet">&hellip;{{ highlight|safe }}&hellip;</li>
-                    {% endfor %}
-                    {% for highlight in hit.highlight['text.exact'] %}
-                        <li class="snippet">&hellip;{{ highlight|safe }}&hellip;</li>
-                    {% endfor %}
-                    </ul>
+                {% if type == "speeches" %}
+                    <h4 class="media-heading">{{ hit._source.speaker.display_name }}</h4>
+                    <h6>In the {% if hit._source.house == "hofreps" %}House of Representatives{% else %}Senate{% endif %}, {{ hit._source.date|date('%e %B %Y') }}</h6>
+                    <p>During &lsquo;{{ hit._source.debate_title }}{% if hit._source.subdebate_title %} &ndash; {{ hit._source.subdebate_title }}{% endif %}&rsquo;</p>
+                    {% if hit.highlight %}
+                        <ul>
+                        {% for highlight in hit.highlight.text %}
+                            <li class="snippet">&hellip;{{ highlight|safe }}&hellip;</li>
+                        {% endfor %}
+                        {% for highlight in hit.highlight['text.exact'] %}
+                            <li class="snippet">&hellip;{{ highlight|safe }}&hellip;</li>
+                        {% endfor %}
+                        </ul>
+                    {% endif %}
+                    <p><a href="https://historichansard.net/{{ hit._source.house }}/{{ hit._source.year }}/{{ hit._source.filename }}/#{% if hit._source.subdebate_index is defined %}subdebate-{{ hit._source.debate_index }}-{{ hit._source.subdebate_index }}-s{{ hit._source.speech_index }}{% else %}debate-{{ hit._source.debate_index }}-s{{ hit._source.speech_index }}{% endif %}">View in context <i class="fa fa-arrow-circle-right" aria-hidden="true"></i></a></p>
+                {% else %}
+                    <h4 class="media-heading">{{ hit._source.title|replace("--", "&mdash;")|safe }}</h4>
+                    <h6>In the {% if hit._source.house == "hofreps" %}House of Representatives{% else %}Senate{% endif %}, {{ hit._source.date|date('%e %B %Y') }}</h6>
+                    <p><a href="https://historichansard.net/{{ hit._source.house }}/{{ hit._source.year }}/{{ hit._source.filename }}/#{% if hit._source.subdebate_index is defined %}subdebate-{{ hit._source.debate_index }}-{{ hit._source.subdebate_index }}{% else %}debate-{{ hit._source.debate_index }}{% endif %}">View in context <i class="fa fa-arrow-circle-right" aria-hidden="true"></i></a></p>
                 {% endif %}
-                <p><a href="https://historichansard.net/{{ hit._source.house }}/{{ hit._source.year }}/{{ hit._source.filename }}/#{% if hit._source.subdebate_index is defined %}subdebate-{{ hit._source.debate_index }}-{{ hit._source.subdebate_index }}-s{{ hit._source.speech_index }}{% else %}debate-{{ hit._source.debate_index }}-s{{ hit._source.speech_index }}{% endif %}">View in context <i class="fa fa-arrow-circle-right" aria-hidden="true"></i></a></p>
             </div>
         </div>
         {% endfor %}

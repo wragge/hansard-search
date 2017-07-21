@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Search :: Historic Hansard</title>
+    <meta name="description" content="" />
+    <meta property="og:title" content="Search :: Historic Hansard" />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="" />
+    <meta property="og:image" content="/static/images/historic-hansard.png" />
+
+    <link rel="stylesheet" href="/static/css/main.css">
+    <link rel="stylesheet" href="/static/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/static/css/bootstrap-datetimepicker.min.css">
+    <link rel="stylesheet" href="/static/css/style.css">
+    <link rel="canonical" href="">
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    </head>
+  <body>
+    <div class="container">
+      <nav class="navbar navbar-default navbar-fixed-top">
+        <div class="container">
+          <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+              <span class="sr-only">Toggle navigation</span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="https://historichansard.net/"><span property="name">Historic Hansard</span></a>
+          </div>
+          <div id="navbar" class="navbar-collapse collapse">
+            <ul class="nav navbar-nav">
+              <li class="dropdown">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">House of Reps <span class="caret"></span></a>
+                <ul class="dropdown-menu">
+                  <li><a href="https://historichansard.net/hofreps/years/">Years</a></li>
+                  <li><a href="https://historichansard.net/hofreps/parliaments/">Parliaments</a></li>
+                  <li><a href="https://historichansard.net/hofreps/people/">People</a></li>
+                  <li><a href="https://historichansard.net/hofreps/bills/">Bills</a></li>
+                </ul>
+              </li>
+              <li class="dropdown">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Senate <span class="caret"></span></a>
+                <ul class="dropdown-menu">
+                  <li><a href="https://historichansard.net/senate/years/">Years</a></li>
+                  <li><a href="https://historichansard.net/senate/parliaments/">Parliaments</a></li>
+                  <li><a href="https://historichansard.net/senate/people/">People</a></li>
+                  <li><a href="https://historichansard.net/senate/bills/">Bills</a></li>
+                </ul>
+              </li>
+              <li><a href="https://historichansard.net/about/">About</a></li>
+              <li><a href="/">Search</a>
+            </ul>
+            
+          </div><!--/.nav-collapse -->
+        </div><!--/.container-fluid -->
+      </nav>
+      <h2>Search tips</h2>
+
+      <h4>Search types</h4>
+
+      <p>There are two search types:</p>
+
+      <ul>
+        <li><strong>Speeches:</strong> search the full text of individual speeches; returns one result per speech (and speaker).</li>
+
+        <li><strong>Debates:</strong> search the titles of debates or questions; returns one result per debate (which may contain many speeches).</li>
+
+      </ul>
+
+      <p>Most of the time you'll want to search for speeches so that you can get into the content quickly. But the debate search is useful if, for example, you want to track the passage of particular bills through Parliament.</p>
+
+      <h4>Full text search</h4>
+
+      <p>By default the search index assumes you want an 'OR' between all your keywords. So if you search Hansard speeches for <code>chinese women</code> you'll get back speeches that contain either 'chinese' or 'women'. You can control this by using boolean operators, for example:</p>
+
+      <ul>
+        <li>use <code>chinese +women</code> to search for speeches that contain both words</li>
+        <li>use <code>chinese +-question</code> to search for debate titles that include 'chinese' <strong>but not</strong> 'question'</li>
+        <li>use <code>(allowance pension) +mother</code> to search for either 'allowance' or 'pension' plus 'mother'</li>
+      </ul>
+
+      <p>There's a certain amount of fuzziness built-in to match things like plurals and alternate spellings. If you want to search for an exact phrase, or a particular form of a word, use double quotes:</p>
+
+      <ul>
+        <li>use <code>"women's rights"</code> to find the exact phrase</li>
+        <li>use <code>"woman" +rights</code> to find 'woman' (but not women) and 'rights'</li>
+      </ul>
+
+      <p>For a bit of extra fuzziness you can use wildcard characters:</p>
+
+      <ul>
+        <li>use <code>chin*</code> to match any word beginning with 'chin', including 'China', 'Chinese', and 'Chinamen'</li>
+      </ul>
+
+      <p>For more precision you can use proximity searches to set a maximum distance between your keywords:</p>
+
+      <ul>
+        <li>use <code>"chinese naturalisation"~5</code> to find the words 'chinese' and 'naturalisation' withing five words of each other</li>
+      </ul>
+
+      <h4>Filters</h4>
+
+      <p>You can filter results by:</p>
+
+      <ul>
+        <li><strong>Date:</strong> define a start date, and end date, or a date range</li>
+        <li><strong>House:</strong> House of Reps, Senate or both</li>
+        <li><strong>Parliament</strong></li>
+        <li><strong>Speaker:</strong> select a person to return only their speeches
+      </ul>
+
+      <p>You can also use House, Parliament, or Speaker without supplying any keywords. For example you could search for <a href="http://search.historichansard.net/?q=&date_from=1901-01-01&date_to=1980-12-31&sort=date_asc&house=&parliament=1&speaker=009MD&start=0">all speeches by Alfred Deakin</a> during the first parliament.</p>
+
+
+
+
+
+
+       
+      <footer class="site-footer">
+        <div class="pull-right">
+          <a href="http://twitter.com/wragge"><i class="fa fa-twitter-square fa-2x" aria-hidden="true"></i></a> <a href="http://github.com/wragge"><i class="fa fa-github-square fa-2x" aria-hidden="true"></i></a>
+        </div>
+          <p>Built by <a href="http://timsherratt.org">timsherratt.org</a><br>
+          <small>Hansard is licensed for reuse by the Parliament of Australia under a <a rel="license" href="http://www.aph.gov.au/Help/Disclaimer_Privacy_Copyright#c">CC-BY-NC-ND</a> licence.</small></p>
+    </footer>
+    </div>  
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+    <script src="/static/js/bootstrap.min.js"></script>
+    <script src="/static/js/moment.js"></script>
+    <script src="/static/js/bootstrap-datetimepicker.min.js"></script>
+    <script src="/static/js/script.js"></script>
+  </body>
+</html>

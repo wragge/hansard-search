@@ -27,8 +27,8 @@ def search():
             }
         },
         "highlight": {
-            "pre_tags" : ["<span class='highlight'>"],
-            "post_tags" : ["</span>"],
+            "pre_tags": ["<span class='highlight'>"],
+            "post_tags": ["</span>"],
             "fields": {
                 "text*": {}
             }
@@ -40,6 +40,7 @@ def search():
     }
     filters = query['query']['bool']['filter']['bool']['must']
     q = request.args.get('q', '')
+    htype = request.args.get('type', 'speeches')
     house = request.args.get('house', None)
     parliament = request.args.get('parliament', None)
     speaker = request.args.get('speaker', None)
@@ -48,6 +49,9 @@ def search():
     start = request.args.get('start', '0')
     sort = request.args.get('sort', 'score')
     # print house
+    # filters.append({'type': {'value': htype}})
+    if htype != 'speeches':
+        query['query']['bool']['must']['simple_query_string']['fields'] = ['title']
     if q:
         query['query']['bool']['must']['simple_query_string']['query'] = q
     if house:
@@ -63,12 +67,17 @@ def search():
     elif sort == 'date_desc':
         query['sort'].append({'date': 'desc'})
     filters.append({"range": {"date": {"gte": date_from, "lte": date_to}}})
-    # print query
+    print query
     if q or house or parliament or speaker:
-        response = requests.post('{}/_search?from={}'.format(ES_URL, start), json=query)
+        response = requests.post('{}{}/_search?from={}'.format(ES_URL, htype, start), json=query)
         results = response.json()
         print results
-    return render_template('search.html', q=q, house=house, parliament=parliament, speaker=speaker, date_from=date_from, date_to=date_to, sort=sort, results=results, parliaments=[str(p) for p in range(1, 34)], start=int(start), count=10)
+    return render_template('search.html', type=htype, q=q, house=house, parliament=parliament, speaker=speaker, date_from=date_from, date_to=date_to, sort=sort, results=results, parliaments=[str(p) for p in range(1, 34)], start=int(start), count=10)
+
+
+@app.route('/tips/', methods=['GET'])
+def tips():
+    return render_template('tips.html')
 
 
 def _jinja2_filter_date(date, fmt='%c'):
