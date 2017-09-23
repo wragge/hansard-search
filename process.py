@@ -30,7 +30,7 @@ def write_csv(data):
             try:
                 context = speech.meta.highlight.text[0].encode('utf-8')
             except AttributeError:
-                context = speech.meta.highlight['text.exact'][0]
+                context = speech.meta.highlight['text.exact'][0].encode('utf-8')
             writer.writerow([speech['date'], title, speech['speaker']['name'], speech['speaker']['id'], context.replace('\n', ' '), speech_url])
     with yagmail.SMTP('historichansard@gmail.com', oauth2_file='~/oauth2_creds.json') as yag:
         to = data['email']
