@@ -34,7 +34,7 @@ def write_csv(data):
             writer.writerow([speech['date'], title, speech['speaker']['name'], speech['speaker']['id'], context.replace('\n', ' '), speech_url])
     with yagmail.SMTP('historichansard@gmail.com', oauth2_file='~/oauth2_creds.json') as yag:
         to = data['email']
-        subject = 'Your Historic Hansard download is ready?'
+        subject = 'Your Historic Hansard download is ready!'
         contents = 'Hi there Hansard lover,\n\n'
         contents += 'Your CSV file is now ready for download. Just go to:\n\n'
         contents += 'https://search.historichansard.net/csv/{}'.format(filename)
