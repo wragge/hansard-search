@@ -120,7 +120,7 @@ def download():
         filters.append({'term': {'speaker.id': speaker.lower()}})
     filters.append({"range": {"date": {"gte": date_from, "lte": date_to}}})
     # print query
-    if email and download == 'yes':
+    if email and download == 'yes' and htype == 'speeches':
         job = queue.enqueue(write_csv, json.dumps({'email': email, 'query': query}))
         # write_csv(json.dumps(query))
     else:

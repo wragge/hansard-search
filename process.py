@@ -7,8 +7,8 @@ from elasticsearch_dsl.connections import connections
 import yagmail
 from math import trunc
 
-connections.create_connection(hosts=['http://138.68.232.184:9200/'], timeout=30)
-# connections.create_connection(hosts=['http://localhost:9200/'])
+# connections.create_connection(hosts=['http://138.68.232.184:9200/'], timeout=30)
+connections.create_connection(hosts=['http://localhost:9200/'])
 
 
 def write_csv(data):
@@ -31,7 +31,7 @@ def write_csv(data):
                 context = speech.meta.highlight.text[0].encode('utf-8')
             except AttributeError:
                 context = speech.meta.highlight['text.exact'][0].encode('utf-8')
-            writer.writerow([speech['date'], title, speech['speaker']['name'], speech['speaker']['id'], context.replace('\n', ' '), speech_url])
+            writer.writerow([speech['date'], title, speech['speaker']['name'].encode('utf-8'), speech['speaker']['id'], context.replace('\n', ' '), speech_url])
     with yagmail.SMTP('historichansard@gmail.com', oauth2_file='~/oauth2_creds.json') as yag:
         to = data['email']
         subject = 'Your Historic Hansard download is ready!'
