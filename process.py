@@ -7,8 +7,8 @@ from elasticsearch_dsl.connections import connections
 import yagmail
 from math import trunc
 
-# connections.create_connection(hosts=['http://138.68.232.184:9200/'], timeout=30)
-connections.create_connection(hosts=['http://localhost:9200/'])
+connections.create_connection(hosts=['http://138.68.232.184:9200/'], timeout=30)
+# connections.create_connection(hosts=['http://localhost:9200/'])
 
 
 def write_csv(data):
