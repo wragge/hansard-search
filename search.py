@@ -74,7 +74,7 @@ def search():
     elif sort == 'date_desc':
         query['sort'].append({'date': 'desc'})
     filters.append({"range": {"date": {"gte": date_from, "lte": date_to}}})
-    print query
+    # print query
     if q or house or parliament or speaker:
         response = requests.post('{}{}/_search?from={}'.format(ES_URL, htype, start), json=query)
         results = response.json()
@@ -119,7 +119,7 @@ def download():
     if speaker:
         filters.append({'term': {'speaker.id': speaker.lower()}})
     filters.append({"range": {"date": {"gte": date_from, "lte": date_to}}})
-    print query
+    # print query
     if email and download == 'yes':
         job = queue.enqueue(write_csv, json.dumps({'email': email, 'query': query}))
         # write_csv(json.dumps(query))

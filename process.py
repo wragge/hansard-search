@@ -27,7 +27,6 @@ def write_csv(data):
             else:
                 title = speech['debate_title'].encode('utf-8')
                 speech_url = '{}#debate-{}-s{}'.format(url, speech['debate_index'], speech['speech_index'])
-            print speech.meta.highlight
             try:
                 context = speech.meta.highlight.text[0].encode('utf-8')
             except AttributeError:
