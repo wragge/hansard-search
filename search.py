@@ -1,11 +1,18 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, send_from_directory
 import requests
 import datetime
 import re
+import json
+from rq import Queue
+from redis import Redis
+from process import write_csv
 
 from credentials import ES_URL
 
 app = Flask(__name__)
+
+redis_conn = Redis()
+queue = Queue('hansard', connection=redis_conn)
 
 PARLIAMENTS = [(str(choice), str(choice)) for choice in range(1, 34)]
 
@@ -71,8 +78,59 @@ def search():
     if q or house or parliament or speaker:
         response = requests.post('{}{}/_search?from={}'.format(ES_URL, htype, start), json=query)
         results = response.json()
-        print results
+        # print results
     return render_template('search.html', type=htype, q=q, house=house, parliament=parliament, speaker=speaker, date_from=date_from, date_to=date_to, sort=sort, results=results, parliaments=[str(p) for p in range(1, 34)], start=int(start), count=10)
+
+
+@app.route('/download/', methods=['GET'])
+def download():
+    query = {
+        "bool": {
+            "must": {
+                "simple_query_string": {
+                    "fields": ["text"],
+                    "query": "*",
+                    "quote_field_suffix": ".exact"}},
+            "filter": {
+                "bool": {
+                    "must": []}}
+        }
+    }
+    filters = query['bool']['filter']['bool']['must']
+    q = request.args.get('q', '')
+    htype = request.args.get('type', 'speeches')
+    house = request.args.get('house', None)
+    parliament = request.args.get('parliament', None)
+    speaker = request.args.get('speaker', None)
+    date_from = request.args.get('date_from', '1901-01-01')
+    date_to = request.args.get('date_to', '1980-12-31')
+    download = request.args.get('download', 'no')
+    email = request.args.get('email', None)
+    # print house
+    # filters.append({'type': {'value': htype}})
+    if htype != 'speeches':
+        query['bool']['must']['simple_query_string']['fields'] = ['title']
+    if q:
+        query['bool']['must']['simple_query_string']['query'] = q
+    if house:
+        filters.append({'term': {'house': house}})
+    if parliament:
+        filters.append({'term': {'parliament': parliament}})
+    if speaker:
+        filters.append({'term': {'speaker.id': speaker.lower()}})
+    filters.append({"range": {"date": {"gte": date_from, "lte": date_to}}})
+    print query
+    if email and download == 'yes':
+        job = queue.enqueue(write_csv, json.dumps({'email': email, 'query': query}))
+        # write_csv(json.dumps(query))
+    else:
+        job = None
+    return render_template('download.html', type=htype, q=q, house=house, parliament=parliament, speaker=speaker, date_from=date_from, date_to=date_to, parliaments=[str(p) for p in range(1, 34)], job=job)
+
+
+@app.route('/csv/<path:filename>')
+def download_file(filename):
+    return send_from_directory('data', filename, as_attachment=True)
 
 
 @app.route('/tips/', methods=['GET'])
