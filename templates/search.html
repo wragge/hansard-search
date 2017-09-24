@@ -1266,7 +1266,7 @@
           </ul>
         </nav>
         
-        <a href="/download/?{{ request.query_string }}">Download all {{ results.hits.total }} results as a CSV file</a>
+        <a class="btn btn-primary" href="/download/?{{ request.query_string }}"><i class="fa fa-download" aria-hidden="true"></i> Download all {{ results.hits.total }} results as a CSV file</a>
 
         {% endif %}
       <footer class="site-footer">

@@ -18,20 +18,30 @@ def write_csv(data):
     filename = '{}.csv'.format(trunc(time.time()))
     with open(os.path.join('data', filename), 'wb') as csv_file:
         writer = csv.writer(csv_file)
-        writer.writerow(['date', 'debate', 'speaker', 'speaker_id', 'context', 'speech_url'])
-        for speech in s.scan():
-            url = 'https://historichansard.net/{}/{}/{}/'.format(speech['house'], speech['year'], speech['filename'])
-            if 'subdebate_title' in speech:
-                title = '{}: {}'.format(speech['debate_title'].encode('utf-8'), speech['subdebate_title'].encode('utf-8'))
-                speech_url = '{}#subdebate-{}-{}-s{}'.format(url, speech['debate_index'], speech['subdebate_index'], speech['speech_index'])
-            else:
-                title = speech['debate_title'].encode('utf-8')
-                speech_url = '{}#debate-{}-s{}'.format(url, speech['debate_index'], speech['speech_index'])
-            try:
-                context = speech.meta.highlight.text[0].encode('utf-8')
-            except AttributeError:
-                context = speech.meta.highlight['text.exact'][0].encode('utf-8')
-            writer.writerow([speech['date'], title, speech['speaker']['name'].encode('utf-8'), speech['speaker']['id'], context.replace('\n', ' '), speech_url])
+        if data['type'] == 'speeches':
+            writer.writerow(['date', 'debate', 'speaker', 'speaker_id', 'house', 'parliament', 'context', 'speech_url'])
+            for speech in s.scan():
+                url = 'https://historichansard.net/{}/{}/{}/'.format(speech['house'], speech['year'], speech['filename'])
+                if 'subdebate_title' in speech:
+                    title = '{}: {}'.format(speech['debate_title'].encode('utf-8'), speech['subdebate_title'].encode('utf-8'))
+                    speech_url = '{}#subdebate-{}-{}-s{}'.format(url, speech['debate_index'], speech['subdebate_index'], speech['speech_index'])
+                else:
+                    title = speech['debate_title'].encode('utf-8')
+                    speech_url = '{}#debate-{}-s{}'.format(url, speech['debate_index'], speech['speech_index'])
+                try:
+                    context = speech.meta.highlight.text[0].encode('utf-8')
+                except AttributeError:
+                    context = speech.meta.highlight['text.exact'][0].encode('utf-8')
+                writer.writerow([speech['date'], title, speech['speaker']['name'].encode('utf-8'), speech['speaker']['id'], speech['house'], speech['parliament'], context.replace('\n', ' '), speech_url])
+        elif data['type'] == 'debates':
+            writer.writerow(['date', 'title', 'house', 'parliament', 'debate_url'])
+            for speech in s.scan():
+                url = 'https://historichansard.net/{}/{}/{}/'.format(speech['house'], speech['year'], speech['filename'])
+                if 'subdebate_index' in speech:
+                    debate_url = '{}#subdebate-{}-{}'.format(url, speech['debate_index'], speech['subdebate_index'])
+                else:
+                    debate_url = '{}#debate-{}'.format(url, speech['debate_index'])
+                writer.writerow([speech['date'], speech['title'].encode('utf-8'), speech['house'], speech['parliament'], debate_url])
     with yagmail.SMTP('historichansard@gmail.com', oauth2_file='~/oauth2_creds.json') as yag:
         to = data['email']
         subject = 'Your Historic Hansard download is ready!'
@@ -41,6 +51,9 @@ def write_csv(data):
         # contents += 'http://127.0.1:5000/csv/{}'.format(filename)
         contents += '\n\nand your download should start automatically.\n\n'
         contents += 'Note that this link will expire in 24 hours.\n\n'
-        contents += 'Enjoy!'
+        contents += 'Enjoy!\n\n'
+        contents += '----------\n\n'
+        contents += 'This email address is not monitored, so if you have any questions or problems try poking @wragge on Twitter, or leave a message in the discussion forum: '
+        contents += 'http://wraggehelp.net/c/historic-hansard'
         yag.send(to=to, subject=subject, contents=contents)
 
