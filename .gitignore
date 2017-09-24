@@ -3,3 +3,4 @@ credentials.py
 *.pyc
 .DS_Store
 search.sock
+data
