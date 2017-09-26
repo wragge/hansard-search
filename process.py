@@ -20,7 +20,7 @@ def write_csv(data):
         writer = csv.writer(csv_file)
         if data['type'] == 'speeches':
             writer.writerow(['date', 'debate', 'speaker', 'speaker_id', 'house', 'parliament', 'context', 'speech_url'])
-            for speech in s.params(size=100).scan():
+            for speech in s.params(raise_on_error=False).scan():
                 url = 'https://historichansard.net/{}/{}/{}/'.format(speech['house'], speech['year'], speech['filename'])
                 if 'subdebate_title' in speech:
                     title = '{}: {}'.format(speech['debate_title'].encode('utf-8'), speech['subdebate_title'].encode('utf-8'))
