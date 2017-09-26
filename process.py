@@ -7,20 +7,20 @@ from elasticsearch_dsl.connections import connections
 import yagmail
 from math import trunc
 
-connections.create_connection(hosts=['http://138.68.232.184:9200/'], timeout=30)
-# connections.create_connection(hosts=['http://localhost:9200/'])
+connections.create_connection(hosts=['http://138.68.232.184:9200/'], timeout=60)
+# connections.create_connection(hosts=['http://localhost:9200/'], timeout=60)
 
 
 def write_csv(data):
     data = json.loads(data)
     eq = Q(data['query'])
-    s = Search().query(eq).source(exclude=['text']).highlight('text*', number_of_fragments=1, fragment_size=100, fragmenter='simple', pre_tags=['**'], post_tags=['**'])
+    s = Search(index='hansard', doc_type=data['type']).query(eq).source(exclude=['text']).highlight('text*', number_of_fragments=1, fragment_size=100, fragmenter='simple', pre_tags=['**'], post_tags=['**'])
     filename = '{}.csv'.format(trunc(time.time()))
     with open(os.path.join('data', filename), 'wb') as csv_file:
         writer = csv.writer(csv_file)
         if data['type'] == 'speeches':
             writer.writerow(['date', 'debate', 'speaker', 'speaker_id', 'house', 'parliament', 'context', 'speech_url'])
-            for speech in s.scan():
+            for speech in s.params(size=100).scan():
                 url = 'https://historichansard.net/{}/{}/{}/'.format(speech['house'], speech['year'], speech['filename'])
                 if 'subdebate_title' in speech:
                     title = '{}: {}'.format(speech['debate_title'].encode('utf-8'), speech['subdebate_title'].encode('utf-8'))
